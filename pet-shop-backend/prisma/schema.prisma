@@ -1,0 +1,41 @@
+
+generator client {
+  provider = "prisma-client"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+
+model Cliente {
+
+  id Int @id @default(autoincrement())
+
+  lookupId String @unique @default(uuid())
+
+  nome String 
+
+  numero String @unique
+
+  email String @unique
+
+  pets Pet[]
+
+}
+
+model Pet {
+
+  id Int @id @default(autoincrement())
+
+  lookupId String @unique @default(uuid())
+
+  nome String
+
+  raca String
+
+  clientId Int
+  dono Cliente @relation(fields: [clientId], references:[id])
+
+}
