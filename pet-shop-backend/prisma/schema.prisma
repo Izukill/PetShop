@@ -1,11 +1,30 @@
 
 generator client {
-  provider = "prisma-client"
+  provider = "prisma-client-js"
 }
 
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
+}
+
+model Pessoa {
+
+  id Int @id @default(autoincrement())
+
+  lookupId String @unique @default(uuid())
+
+  nome String
+
+  email String @unique
+
+  dataCadastro DateTime @db.Date
+
+  ativo Boolean @default(true)
+
+  cliente     Cliente?
+  funcionario Funcionario?
+
 }
 
 
@@ -15,13 +34,59 @@ model Cliente {
 
   lookupId String @unique @default(uuid())
 
-  nome String 
-
   numero String @unique
 
-  email String @unique
-
   pets Pet[]
+
+  enderecos Endereco[]
+
+  vendas Venda[]
+
+  pessoaId Int @unique
+
+  pessoa Pessoa @relation(fields: [pessoaId], references: [id]) 
+
+}
+
+model Funcionario {
+
+  id Int @id @default(autoincrement())
+
+  lookupId String @unique @default(uuid())
+
+  cargo String
+
+  matricula Int
+
+  especializacao String
+
+  servicos Servico[]
+
+  pessoaId Int @unique
+
+  pessoa Pessoa @relation(fields: [pessoaId], references: [id])
+
+}
+
+model Endereco {
+
+  id Int @id @default(autoincrement())
+
+  lookupId String @unique @default(uuid())
+
+  rua String
+
+  complemento String
+
+  estado String
+
+  numero String
+
+  cep String
+
+  clienteId Int
+
+  casa Cliente @relation(fields: [clienteId], references: [id])
 
 }
 
@@ -35,7 +100,120 @@ model Pet {
 
   raca String
 
-  clientId Int
-  dono Cliente @relation(fields: [clientId], references:[id])
+  servicos Servico[]
+
+  clienteId Int
+  dono Cliente @relation(fields: [clienteId], references:[id])
+
+}
+
+
+model Produto{
+
+  id Int @id @default(autoincrement())
+
+  lookupId String @unique @default(uuid())
+
+  preco Decimal @db.Decimal(10,2)
+
+  nome String @unique
+
+  quantidade Int
+
+  categoria String
+
+  ativo Boolean
+
+  itensVenda ItemVenda[]
+}
+
+model ItemVenda{
+
+  id Int @id @default(autoincrement())
+
+  lookupId String @unique @default(uuid())
+
+  precoUnitario Decimal @db.Decimal(10,2)
+
+  quantidade Int
+
+  vendaId Int
+
+  venda Venda @relation(fields: [vendaId], references: [id])
+
+  produtoId Int
+
+  produto Produto @relation(fields: [produtoId], references: [id])
+
+}
+
+model TipoServico{
+
+  id Int @id @default(autoincrement())
+
+  lookupId String @unique @default(uuid())
+
+  nome String @unique
+
+  descricao String
+
+  preco Decimal @db.Decimal(10,2)
+
+  ativo Boolean
+
+  servico Servico[]
+
+}
+
+model Servico{
+
+  id Int @id @default(autoincrement())
+
+  lookupId String @unique @default(uuid())
+
+  status String
+
+  observacao String 
+
+  dataAgendamento DateTime @db.Date
+
+  dataExecucao DateTime @db.Date
+
+  tipoServicoId Int
+
+  tipoServico TipoServico @relation(fields: [tipoServicoId], references: [id])
+
+  petId Int
+
+  pet Pet @relation(fields: [petId], references: [id])
+
+  funcionarioId Int
+
+  funcionario Funcionario @relation(fields: [funcionarioId], references: [id])
+
+  vendaId Int?
+
+  venda Venda? @relation(fields: [vendaId], references: [id])
+
+}
+
+
+model Venda{
+
+  id Int @id @default(autoincrement())
+
+  lookupId String @unique @default(uuid())
+
+  valorTotal Decimal @db.Decimal(10,2)
+
+  data DateTime @db.Date
+
+  clienteId Int
+
+  cliente Cliente @relation(fields: [clienteId], references: [id])
+
+  item_venda ItemVenda[]
+
+  servico Servico[]
 
 }
