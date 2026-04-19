@@ -164,19 +164,28 @@ model TipoServico{
 
 }
 
+enum ServicoStatus {
+  CONCLUIDO
+  CANCELADO
+  AGENDADO
+  ANDAMENTO
+}
+
 model Servico{
 
   id Int @id @default(autoincrement())
 
   lookupId String @unique @default(uuid())
 
-  status String
+  status ServicoStatus @default(ANDAMENTO)
 
   observacao String 
 
   dataAgendamento DateTime? @db.Date
 
   dataExecucao DateTime? @db.Date
+
+  precoUnitario Decimal @db.Decimal(10,2)
 
   tipoServicoId Int
 
@@ -197,6 +206,12 @@ model Servico{
 }
 
 
+enum VendaStatus {
+  CONCLUIDA
+  AGUARDANDO
+  CANCELADA
+}
+
 model Venda{
 
   id Int @id @default(autoincrement())
@@ -204,6 +219,8 @@ model Venda{
   lookupId String @unique @default(uuid())
 
   valorTotal Decimal @db.Decimal(10,2)
+
+  status VendaStatus @default(CONCLUIDA)
 
   data DateTime @db.Date
 

@@ -1,26 +1,81 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable,NotFoundException } from '@nestjs/common';
 import { CreateProdutoDto } from './dto/create-produto.dto';
 import { UpdateProdutoDto } from './dto/update-produto.dto';
+import { PrismaService } from '../prisma/prisma.service';
+import { Prisma } from '@prisma/client';
 
 @Injectable()
 export class ProdutoService {
-  create(createProdutoDto: CreateProdutoDto) {
-    return 'This action adds a new produto';
+
+  constructor(private readonly prisma: PrismaService) {}
+
+  async create(createProdutoDto: CreateProdutoDto) {
+
+    const novoProduto = await this.prisma.produto.create({
+      data: {
+        nome: createProdutoDto.nome,
+        categoria: createProdutoDto.categoria,
+        preco: createProdutoDto.preco,
+        quantidade: createProdutoDto.quantidade,
+      },
+    });
+
+    return novoProduto;
+
   }
 
-  findAll() {
-    return `This action returns all produto`;
+  async findAll() {
+    return await this.prisma.produto.findMany();
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} produto`;
+  async findOne(id: number) {
+    try{
+      return await this.prisma.produto.findUnique({
+        where: {id: id},
+      });
+    } catch (error){
+      if(error instanceof Prisma.PrismaClientKnownRequestError) {
+        if (error.code === 'P2025') {
+          throw new NotFoundException(`Produto com ID ${id} não encontrado.`);
+        }
+      }
+    }
   }
 
-  update(id: number, updateProdutoDto: UpdateProdutoDto) {
-    return `This action updates a #${id} produto`;
+  async update(id: number, updateProdutoDto: UpdateProdutoDto) {
+    try{
+      return await this.prisma.produto.update({
+        where: {id: id},
+        data: {
+          nome: updateProdutoDto.nome,
+          categoria: updateProdutoDto.categoria,
+          preco: updateProdutoDto.preco,
+          quantidade: updateProdutoDto.quantidade,
+        },
+      });
+    } catch (error) {
+      if(error instanceof Prisma.PrismaClientKnownRequestError) {
+        if (error.code === 'P2025') {
+          throw new NotFoundException(`Produto com ID ${id} não encontrado.`);
+        }
+      }
+    }
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} produto`;
+  async remove(id: number) {
+    try{
+      return await this.prisma.produto.update({
+        where: {id: id},
+        data: {
+          ativo: false,
+        }
+      });
+    } catch (error) {
+      if(error instanceof Prisma.PrismaClientKnownRequestError) {
+        if (error.code === 'P2025') {
+          throw new NotFoundException(`Produto com ID ${id} não encontrado.`);
+        }
+      }
+    }
   }
 }

@@ -1,9 +1,9 @@
-import { IsNotEmpty, IsNumber, IsDate, IsInt, IsArray, ValidateNested } from 'class-validator';
+import { IsNotEmpty, IsNumber, IsInt, IsArray, ValidateNested, IsEnum } from 'class-validator';
+import { VendaStatus } from '@prisma/client';
 import { Type } from 'class-transformer';
 
 class ItemVendaDto {
-    @IsInt() produtoId!: number;
-    @IsInt() vendaId!: number;
+    @IsInt() produtoId!: number;    
     @IsNumber() precoUnitario!: number;
     @IsInt() quantidade!: number;
   }
@@ -12,13 +12,10 @@ class ItemVendaDto {
 
 export class CreateVendaDto {
 
-    @IsNotEmpty({message: 'O valor total é obrigatório.'})
-    @IsNumber({}, { message: 'O valor total deve ser um número' })
-    valorTotal!: number;
 
-    @IsNotEmpty({message: 'A data é obrigatória.'})
-    @IsDate({ message: 'A data deve ser uma data válida' })
-    data!: Date;
+    @IsEnum(VendaStatus, { message: 'Status inválido. Use CONCLUIDA, CANCELADA ou AGUARDANDO' })
+    @IsNotEmpty({ message: 'O status da venda é obrigatório.' })
+    status!: VendaStatus;
 
     @IsNotEmpty({message: 'O cliente é obrigatório.'})
     @IsInt({ message: 'O clienteId deve ser um número inteiro' })

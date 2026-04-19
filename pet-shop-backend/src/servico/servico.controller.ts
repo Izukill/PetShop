@@ -31,4 +31,10 @@ export class ServicoController {
   remove(@Param('id') id: string) {
     return this.servicoService.remove(+id);
   }
+
+  @Patch(':id/finalizar')
+  finalizar(@Param ('id') id: string) {
+    return this.servicoService.finalizar(+id);
+  }
+
 }

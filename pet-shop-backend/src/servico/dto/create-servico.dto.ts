@@ -1,19 +1,26 @@
-import {IsNotEmpty, IsString, IsInt, IsDate } from 'class-validator';
+import {IsNotEmpty, IsString, IsInt, IsNumber, IsDate, IsOptional, IsEnum } from 'class-validator';
 
 export class CreateServicoDto {
 
     @IsNotEmpty({message: 'O status é obrigatório.'})
-    @IsString({message: 'O status deve ser uma string.'})    
+    @IsEnum(['AGENDADO', 'ANDAMENTO', 'CONCLUIDO', 'CANCELADO'], { message: 'Status inválido. Use AGENDADO, ANDAMENTO, CONCLUIDO ou CANCELADO' })
     status!: string;
 
+    @IsOptional()
     @IsString({message: 'A observação deve ser uma string.'})
     observacao!: string;
 
+    @IsOptional()
     @IsDate({ message: 'A data de agendamento deve ser uma data válida' })
     dataAgendamento?: Date;
 
+    @IsOptional()
     @IsDate({ message: 'A data de execução deve ser uma data válida' })
     dataExecucao?: Date;
+
+    @IsNotEmpty({message: 'O preço unitário é obrigatório.'})
+    @IsNumber({}, { message: 'O preço unitário deve ser um número' })
+    precoUnitario!: number;
 
     @IsNotEmpty({message: 'O tipo de serviço é obrigatório.'})
     @IsInt({ message: 'O ID do tipo de serviço deve ser um número inteiro' })
@@ -27,6 +34,7 @@ export class CreateServicoDto {
     @IsInt({ message: 'O ID do funcionário deve ser um número inteiro' })
     funcionarioId!: number;
 
+    @IsOptional()
     @IsInt({ message: 'O ID da venda deve ser um número inteiro' })
     vendaId?: number;
 
