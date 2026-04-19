@@ -1,26 +1,96 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateEnderecoDto } from './dto/create-endereco.dto';
 import { UpdateEnderecoDto } from './dto/update-endereco.dto';
+import { PrismaService } from '../prisma/prisma.service';
+import { Prisma } from '@prisma/client';
 
 @Injectable()
 export class EnderecoService {
-  create(createEnderecoDto: CreateEnderecoDto) {
-    return 'This action adds a new endereco';
+
+  constructor(private readonly prisma: PrismaService) {}
+
+
+  async create(createEnderecoDto: CreateEnderecoDto) {
+
+    try {
+      return await this.prisma.endereco.create({
+        data: {
+          rua: createEnderecoDto.rua,
+          numero: createEnderecoDto.numero,
+          cep: createEnderecoDto.cep,
+          complemento: createEnderecoDto.complemento,
+          clienteId: createEnderecoDto.clienteId,
+        },
+      });
+    } catch (error) {
+      if (error instanceof Prisma.PrismaClientKnownRequestError) {
+        if (error.code === 'P2003') {
+          throw new NotFoundException(`Não é possível cadastrar endereço. Cliente com ID ${createEnderecoDto.clienteId} não encontrado.`);
+        }
+      }
+      throw error; 
+    }
   }
 
-  findAll() {
-    return `This action returns all endereco`;
+  async findAll() {
+    return await this.prisma.endereco.findMany({ 
+      include: {
+        casa: true,
+      },
+    });
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} endereco`;
+  async findOne(id: number) {
+    try{
+      return await this.prisma.endereco.findUnique({
+        where: {id: id},
+        include: {
+          casa: true,
+        },
+      });
+    } catch (error) {
+      if (error instanceof Prisma.PrismaClientKnownRequestError) {
+        if (error.code === 'P2025') {
+          throw new NotFoundException(`Endereço com ID ${id} não encontrado.`);
+        }
+      }
+      throw error; 
+    }
   }
 
-  update(id: number, updateEnderecoDto: UpdateEnderecoDto) {
-    return `This action updates a #${id} endereco`;
+  async update(id: number, updateEnderecoDto: UpdateEnderecoDto) {
+    try{
+      return await this.prisma.endereco.update({
+        where: {id: id},
+        data: {
+          rua: updateEnderecoDto.rua,
+          numero: updateEnderecoDto.numero,
+          cep: updateEnderecoDto.cep,
+          complemento: updateEnderecoDto.complemento,
+        },
+      });
+    } catch (error) {
+      if (error instanceof Prisma.PrismaClientKnownRequestError) {
+        if (error.code === 'P2025') {
+          throw new NotFoundException(`Endereço com ID ${id} não encontrado.`);
+        }
+      }
+      throw error; 
+    }
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} endereco`;
+  async remove(id: number) {
+    try{
+      return await this.prisma.endereco.delete({
+        where: {id: id},
+      });
+    } catch (error) {
+      if (error instanceof Prisma.PrismaClientKnownRequestError) {
+        if (error.code === 'P2025') {
+          throw new NotFoundException(`Endereço com ID ${id} não encontrado.`);
+        }
+      }
+      throw error; 
+    }
   }
 }

@@ -1,26 +1,110 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateFuncionarioDto } from './dto/create-funcionario.dto';
 import { UpdateFuncionarioDto } from './dto/update-funcionario.dto';
+import { PrismaService } from 'src/prisma/prisma.service';
+import { Prisma } from '@prisma/client';
 
 @Injectable()
 export class FuncionarioService {
-  create(createFuncionarioDto: CreateFuncionarioDto) {
-    return 'This action adds a new funcionario';
+
+  constructor(private readonly prisma: PrismaService) {}
+  
+  async create(createFuncionarioDto: CreateFuncionarioDto) {
+
+    const novoFuncionario = await this.prisma.funcionario.create({
+      data: {
+        
+        especializacao: createFuncionarioDto.especializacao,
+        matricula: createFuncionarioDto.matricula,
+        cargo: createFuncionarioDto.cargo,
+        pessoa: {
+          create: {
+            nome: createFuncionarioDto.nome,
+            email: createFuncionarioDto.email,
+            dataCadastro: new Date(),
+          },
+        },
+      },
+      include: {
+        pessoa: true,
+      },
+    });
+
+    return novoFuncionario;
   }
 
-  findAll() {
-    return `This action returns all funcionario`;
+  async findAll() {
+    return await this.prisma.funcionario.findMany({
+      include: {
+        pessoa: true,
+      },
+    });
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} funcionario`;
+  async findOne(id: number) {
+    try{
+      return await this.prisma.funcionario.findUnique({
+        where: {id: id},
+        include: {
+          pessoa: true,
+        },
+      });
+    } catch (error){
+      if (error instanceof Prisma.PrismaClientKnownRequestError) {
+        if (error.code === 'P2025') {
+          throw new NotFoundException(`Funcionário com ID ${id} não encontrado.`);
+        }
+      }
+      throw error;
+    }
   }
 
-  update(id: number, updateFuncionarioDto: UpdateFuncionarioDto) {
-    return `This action updates a #${id} funcionario`;
+  async update(id: number, updateFuncionarioDto: UpdateFuncionarioDto) {
+    try{
+      return await this.prisma.funcionario.update({
+        where: {id: id},
+        data: {
+          especializacao: updateFuncionarioDto.especializacao,
+          matricula: updateFuncionarioDto.matricula,
+          cargo: updateFuncionarioDto.cargo,
+          pessoa: {
+            update: {
+              nome: updateFuncionarioDto.nome,
+              email: updateFuncionarioDto.email,
+            },
+          },
+        },
+        include: {
+          pessoa: true,
+        },
+      });
+    } catch (error){
+      if (error instanceof Prisma.PrismaClientKnownRequestError) {
+        if (error.code === 'P2025') {
+          throw new NotFoundException(`Funcionário com ID ${id} não encontrado.`);
+        }
+      }
+    }
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} funcionario`;
+  async remove(id: number) {
+    try{
+      return await this.prisma.funcionario.update({
+        where: {id: id},
+        data: {
+          pessoa:{
+            update: {
+              ativo: false,
+            }
+          }
+        }
+      });
+    } catch (error){
+      if (error instanceof Prisma.PrismaClientKnownRequestError) {
+        if (error.code === 'P2025') {
+          throw new NotFoundException(`Funcionário com ID ${id} não encontrado.`);
+        }
+      }
+    }
   }
 }

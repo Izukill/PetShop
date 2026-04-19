@@ -1,7 +1,8 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateClienteDto } from './dto/create-cliente.dto';
 import { UpdateClienteDto } from './dto/update-cliente.dto';
 import { PrismaService } from '../prisma/prisma.service';
+import { Prisma } from '@prisma/client';
 
 @Injectable()
 export class ClienteService {
@@ -24,23 +25,16 @@ export class ClienteService {
             dataCadastro: new Date(),
           },
         },
-
-
-
       },
-
       include: {
         pessoa: true,
       },
-
     });
 
     return novoCliente;
 
   }
     
-
-
 
   async findAll() {
     return await this.prisma.cliente.findMany({
@@ -51,14 +45,74 @@ export class ClienteService {
   }
 
   async findOne(id: number) {
-    return `This action returns a #${id} cliente`;
+    try{
+      return await this.prisma.cliente.findUnique({
+        where: {
+          id: id,
+        },
+        include: {
+          pessoa: true,
+        },
+      });
+    } catch (error){
+      if (error instanceof Prisma.PrismaClientKnownRequestError) {
+        if (error.code === 'P2025') {
+          throw new NotFoundException(`Cliente com ID ${id} não encontrado.`);
+        }
+      }
+      throw error; 
+    }
   }
 
   async update(id: number, updateClienteDto: UpdateClienteDto) {
-    return `This action updates a #${id} cliente`;
+
+    try{
+      return await this.prisma.cliente.update({
+        where: { id: id },
+        data: {
+          numero: updateClienteDto.numero,
+          pessoa: {
+            update: {
+              nome: updateClienteDto.nome,
+              email: updateClienteDto.email,
+            },
+          },
+        },
+        include: {
+          pessoa: true,
+        },
+      });
+    } catch (error){
+      if (error instanceof Prisma.PrismaClientKnownRequestError) {
+        if (error.code === 'P2025') {
+          throw new NotFoundException(`Cliente com ID ${id} não encontrado.`);
+        }
+      }
+      throw error; 
+    }
   }
 
   async remove(id: number) {
-    return `This action removes a #${id} cliente`;
-  }
+
+    try{
+      return await this.prisma.cliente.update({
+        where: { id: id },
+        data:{
+          pessoa: {
+            update:{
+              ativo: false,
+            }
+          }
+        },
+        include: { pessoa: true }
+      });
+    } catch (error){
+      if (error instanceof Prisma.PrismaClientKnownRequestError) {
+        if (error.code === 'P2025') {
+          throw new NotFoundException(`Cliente com ID ${id} não encontrado.`);
+        }
+      }
+      throw error; 
+    }
+  } 
 }
