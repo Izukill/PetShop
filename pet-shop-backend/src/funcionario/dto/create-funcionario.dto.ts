@@ -1,4 +1,4 @@
-import { IsEmail, IsNotEmpty, IsString } from 'class-validator';
+import { IsEmail, IsNotEmpty, IsString, IsOptional, IsBoolean } from 'class-validator';
 
 export class CreateFuncionarioDto {
 
@@ -13,6 +13,8 @@ export class CreateFuncionarioDto {
     @IsNotEmpty({message: 'A matrícula é obrigatória.'})
     matricula!: number;
 
+    @IsOptional()
+    @IsBoolean({ message: 'O campo "ativo" deve ser um booleano' })
     ativo!: boolean;
 
     @IsNotEmpty({message: 'O cargo é obrigatório.'})

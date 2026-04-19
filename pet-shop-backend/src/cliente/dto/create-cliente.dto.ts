@@ -1,4 +1,4 @@
-import { IsEmail, IsNotEmpty, IsString, MinLength } from 'class-validator';
+import { IsEmail, IsNotEmpty, IsString, MinLength, IsOptional, IsBoolean } from 'class-validator';
 
 export class CreateClienteDto {
 
@@ -14,9 +14,8 @@ export class CreateClienteDto {
     @IsString({message: 'O número de telefone deve ser uma string.'})
     numero!: string;
 
+    @IsOptional()
+    @IsBoolean({ message: 'O campo "ativo" deve ser um booleano' })
     ativo!: boolean;
-
-
-
 
 }
