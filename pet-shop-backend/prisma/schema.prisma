@@ -98,6 +98,8 @@ model Pet {
 
   nome String
 
+  especie String
+
   raca String
 
   servicos Servico[]
