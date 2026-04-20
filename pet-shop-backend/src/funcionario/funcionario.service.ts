@@ -3,6 +3,7 @@ import { CreateFuncionarioDto } from './dto/create-funcionario.dto';
 import { UpdateFuncionarioDto } from './dto/update-funcionario.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { Prisma } from '@prisma/client';
+import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class FuncionarioService {
@@ -11,7 +12,11 @@ export class FuncionarioService {
   
   async create(createFuncionarioDto: CreateFuncionarioDto) {
 
+    const senhaCriptografada = await bcrypt.hash(createFuncionarioDto.senha, 10);
+
     const novoFuncionario = await this.prisma.funcionario.create({
+
+      
       data: {
         
         especializacao: createFuncionarioDto.especializacao,
@@ -22,6 +27,7 @@ export class FuncionarioService {
             nome: createFuncionarioDto.nome,
             email: createFuncionarioDto.email,
             dataCadastro: new Date(),
+            senha: senhaCriptografada,
           },
         },
       },

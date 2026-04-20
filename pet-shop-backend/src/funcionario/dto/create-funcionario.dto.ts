@@ -25,4 +25,8 @@ export class CreateFuncionarioDto {
     @IsString({message: 'A especialização deve ser uma string.'})
     especializacao!: string;
 
+    @IsNotEmpty({message: 'A senha é obrigatória.'})
+    @IsString({message: 'A senha deve ser uma string.'})
+    senha!: string;
+
 }

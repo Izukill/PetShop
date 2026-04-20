@@ -17,6 +17,8 @@ model Pessoa {
 
   email String @unique
 
+  senha String
+
   dataCadastro DateTime @db.Date
 
   ativo Boolean @default(true)

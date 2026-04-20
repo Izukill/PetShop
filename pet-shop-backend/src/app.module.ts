@@ -11,10 +11,12 @@ import { ProdutoModule } from './produto/produto.module';
 import { TipoServicoModule } from './tipo-servico/tipo-servico.module';
 import { ServicoModule } from './servico/servico.module';
 import { EnderecoModule } from './endereco/endereco.module';
+import { AuthModule } from './auth/auth.module';
+import { ConfigModule } from '@nestjs/config';
 
 @Global()
 @Module({
-  imports: [PrismaModule, ClienteModule, PetModule, VendaModule, FuncionarioModule, ProdutoModule, TipoServicoModule, ServicoModule, EnderecoModule],
+  imports: [ConfigModule.forRoot({ isGlobal: true }), PrismaModule, ClienteModule, PetModule, VendaModule, FuncionarioModule, ProdutoModule, TipoServicoModule, ServicoModule, EnderecoModule, AuthModule],
   controllers: [AppController],
   providers: [AppService, PrismaService],
   exports: [PrismaService],
