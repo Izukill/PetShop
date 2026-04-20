@@ -17,7 +17,7 @@ export class AuthService {
       include: { funcionario: true }
     });
 
-    if (!pessoa) {
+    if (!pessoa || !pessoa.senha) {
       throw new UnauthorizedException('E-mail ou senha incorretos.');
     }
 

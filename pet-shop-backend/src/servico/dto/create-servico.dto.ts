@@ -1,40 +1,50 @@
-import {IsNotEmpty, IsString, IsInt, IsNumber, IsDate, IsOptional, IsEnum } from 'class-validator';
+import {IsNotEmpty, IsString, IsInt, IsDate, IsOptional, IsEnum, IsDecimal } from 'class-validator';
 import { ServicoStatus } from '@prisma/client';
+import { ApiProperty } from '@nestjs/swagger';
 
 export class CreateServicoDto {
 
+    @ApiProperty({ description: 'Status do serviço', enum: ServicoStatus, example: ServicoStatus.AGENDADO })
     @IsNotEmpty({message: 'O status é obrigatório.'})
     @IsEnum(ServicoStatus, { message: 'Status inválido. Use AGENDADO, ANDAMENTO, CONCLUIDO ou CANCELADO' })
     status!: ServicoStatus;
 
+    @ApiProperty({ description: 'Observação do serviço', example: 'O pet precisa de atenção especial durante o banho.' })
     @IsOptional()
     @IsString({message: 'A observação deve ser uma string.'})
     observacao!: string;
 
+    @ApiProperty({ description: 'Data de agendamento do serviço', example: '2024-07-01T10:00:00Z' })
     @IsOptional()
     @IsDate({ message: 'A data de agendamento deve ser uma data válida' })
     dataAgendamento?: Date;
 
+    @ApiProperty({ description: 'Data de execução do serviço', example: '2024-07-01T12:00:00Z' })
     @IsOptional()
     @IsDate({ message: 'A data de execução deve ser uma data válida' })
     dataExecucao?: Date;
 
+    @ApiProperty({ description: 'Preço unitário do serviço', example: 150.00 })
     @IsNotEmpty({message: 'O preço unitário é obrigatório.'})
-    @IsNumber({}, { message: 'O preço unitário deve ser um número' })
+    @IsDecimal()
     precoUnitario!: number;
 
+    @ApiProperty({ description: 'ID do tipo de serviço associado ao serviço', example: 1 })
     @IsNotEmpty({message: 'O tipo de serviço é obrigatório.'})
     @IsInt({ message: 'O ID do tipo de serviço deve ser um número inteiro' })
     tipoServicoId!: number;
 
+    @ApiProperty({ description: 'ID do pet associado ao serviço', example: 1 })
     @IsNotEmpty({message: 'O pet é obrigatório.'})
     @IsInt({ message: 'O ID do pet deve ser um número inteiro' })
     petId!: number;
 
+    @ApiProperty({ description: 'ID do funcionário associado ao serviço', example: 1 })
     @IsNotEmpty({message: 'O funcionário é obrigatório.'})
     @IsInt({ message: 'O ID do funcionário deve ser um número inteiro' })
     funcionarioId!: number;
 
+    @ApiProperty({ description: 'ID da venda associada ao serviço', example: 1, required: false })
     @IsOptional()
     @IsInt({ message: 'O ID da venda deve ser um número inteiro' })
     vendaId?: number;

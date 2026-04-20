@@ -1,33 +1,50 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards } from '@nestjs/common';
 import { TipoServicoService } from './tipo-servico.service';
 import { CreateTipoServicoDto } from './dto/create-tipo-servico.dto';
 import { UpdateTipoServicoDto } from './dto/update-tipo-servico.dto';
+import { AuthGuard } from '../auth/auth.guard';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import { 
+  ApiDocCriarTipoServico, 
+  ApiDocListarTiposServico, 
+  ApiDocBuscarTipoServicoPorId, 
+  ApiDocAtualizarTipoServico, 
+  ApiDocRemoverTipoServico 
+} from './swagger/tipo-servico.swagger';
 
+@ApiTags('Tipos de Serviço')
+@ApiBearerAuth()
+@UseGuards(AuthGuard)
 @Controller('tipo-servico')
 export class TipoServicoController {
   constructor(private readonly tipoServicoService: TipoServicoService) {}
 
   @Post()
+  @ApiDocCriarTipoServico()
   create(@Body() createTipoServicoDto: CreateTipoServicoDto) {
     return this.tipoServicoService.create(createTipoServicoDto);
   }
 
   @Get()
+  @ApiDocListarTiposServico()
   findAll() {
     return this.tipoServicoService.findAll();
   }
 
   @Get(':id')
+  @ApiDocBuscarTipoServicoPorId()
   findOne(@Param('id') id: string) {
     return this.tipoServicoService.findOne(+id);
   }
 
   @Patch(':id')
+  @ApiDocAtualizarTipoServico()
   update(@Param('id') id: string, @Body() updateTipoServicoDto: UpdateTipoServicoDto) {
     return this.tipoServicoService.update(+id, updateTipoServicoDto);
   }
 
   @Delete(':id')
+  @ApiDocRemoverTipoServico()
   remove(@Param('id') id: string) {
     return this.tipoServicoService.remove(+id);
   }

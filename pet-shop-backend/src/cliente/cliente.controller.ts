@@ -1,33 +1,50 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards } from '@nestjs/common';
 import { ClienteService } from './cliente.service';
 import { CreateClienteDto } from './dto/create-cliente.dto';
 import { UpdateClienteDto } from './dto/update-cliente.dto';
+import { AuthGuard } from '../auth/auth.guard';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import { 
+  ApiDocCriarCliente, 
+  ApiDocListarClientes, 
+  ApiDocBuscarClientePorId, 
+  ApiDocAtualizarCliente, 
+  ApiDocRemoverCliente 
+} from './swagger/cliente.swagger';
 
+@ApiTags('Clientes')
+@ApiBearerAuth()
+@UseGuards(AuthGuard)
 @Controller('cliente')
 export class ClienteController {
   constructor(private readonly clienteService: ClienteService) {}
 
   @Post()
+  @ApiDocCriarCliente()
   create(@Body() createClienteDto: CreateClienteDto) {
     return this.clienteService.create(createClienteDto);
   }
 
   @Get()
+  @ApiDocListarClientes()
   findAll() {
     return this.clienteService.findAll();
   }
 
   @Get(':id')
+  @ApiDocBuscarClientePorId()
   findOne(@Param('id') id: string) {
     return this.clienteService.findOne(+id);
   }
 
   @Patch(':id')
+  @ApiDocAtualizarCliente()
   update(@Param('id') id: string, @Body() updateClienteDto: UpdateClienteDto) {
     return this.clienteService.update(+id, updateClienteDto);
   }
 
   @Delete(':id')
+  @ApiDocRemoverCliente()
   remove(@Param('id') id: string) {
     return this.clienteService.remove(+id);
   }
