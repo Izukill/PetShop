@@ -1,98 +1,113 @@
-import { Image } from 'expo-image';
-import { Platform, StyleSheet } from 'react-native';
+import React from 'react';
+import { View, Text, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { router } from 'expo-router';
 
-import { HelloWave } from '@/components/hello-wave';
-import ParallaxScrollView from '@/components/parallax-scroll-view';
-import { ThemedText } from '@/components/themed-text';
-import { ThemedView } from '@/components/themed-view';
-import { Link } from 'expo-router';
+export default function Home() {
+  
+  const handleLogout = async () => {
 
-export default function HomeScreen() {
+    await AsyncStorage.removeItem('@PetShop:token');
+    
+    router.replace('/');
+  };
+
   return (
-    <ParallaxScrollView
-      headerBackgroundColor={{ light: '#A1CEDC', dark: '#1D3D47' }}
-      headerImage={
-        <Image
-          source={require('@/assets/images/partial-react-logo.png')}
-          style={styles.reactLogo}
-        />
-      }>
-      <ThemedView style={styles.titleContainer}>
-        <ThemedText type="title">Welcome!</ThemedText>
-        <HelloWave />
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 1: Try it</ThemedText>
-        <ThemedText>
-          Edit <ThemedText type="defaultSemiBold">app/(tabs)/index.tsx</ThemedText> to see changes.
-          Press{' '}
-          <ThemedText type="defaultSemiBold">
-            {Platform.select({
-              ios: 'cmd + d',
-              android: 'cmd + m',
-              web: 'F12',
-            })}
-          </ThemedText>{' '}
-          to open developer tools.
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <Link href="/modal">
-          <Link.Trigger>
-            <ThemedText type="subtitle">Step 2: Explore</ThemedText>
-          </Link.Trigger>
-          <Link.Preview />
-          <Link.Menu>
-            <Link.MenuAction title="Action" icon="cube" onPress={() => alert('Action pressed')} />
-            <Link.MenuAction
-              title="Share"
-              icon="square.and.arrow.up"
-              onPress={() => alert('Share pressed')}
-            />
-            <Link.Menu title="More" icon="ellipsis">
-              <Link.MenuAction
-                title="Delete"
-                icon="trash"
-                destructive
-                onPress={() => alert('Delete pressed')}
-              />
-            </Link.Menu>
-          </Link.Menu>
-        </Link>
+    //scrollView permite rolar a tela se tiver muito conteúdo
+    <ScrollView style={styles.container}>
+      
+      <View style={styles.header}>
+        <View>
+          <Text style={styles.saudacao}>Olá, Equipe!</Text>
+          <Text style={styles.subSaudacao}>Resumo do dia</Text>
+        </View>
+        
+        <TouchableOpacity style={styles.botaoSair} onPress={handleLogout}>
+          <Text style={styles.textoBotaoSair}>Sair</Text>
+        </TouchableOpacity>
+      </View>
 
-        <ThemedText>
-          {`Tap the Explore tab to learn more about what's included in this starter app.`}
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 3: Get a fresh start</ThemedText>
-        <ThemedText>
-          {`When you're ready, run `}
-          <ThemedText type="defaultSemiBold">npm run reset-project</ThemedText> to get a fresh{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> directory. This will move the current{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> to{' '}
-          <ThemedText type="defaultSemiBold">app-example</ThemedText>.
-        </ThemedText>
-      </ThemedView>
-    </ParallaxScrollView>
+      {/* cartões com dados mockados pra teste de layout */}
+      <View style={styles.cardsContainer}>
+        <View style={[styles.card, { borderTopColor: '#74B9FF', borderTopWidth: 4 }]}>
+          <Text style={styles.cardTitulo}>Vendas Hoje</Text>
+          <Text style={styles.cardValor}>R$ 450,00</Text>
+        </View>
+
+        <View style={[styles.card, { borderTopColor: '#55E6C1', borderTopWidth: 4 }]}>
+          <Text style={styles.cardTitulo}>Banhos Agendados</Text>
+          <Text style={styles.cardValor}>5 Pets</Text>
+        </View>
+      </View>
+
+    </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
-  titleContainer: {
+  container: {
+    flex: 1,
+    backgroundColor: '#F5F7FA',
+  },
+  header: {
     flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
+    justifyContent: 'space-between', 
+    alignItems: 'center', 
+    padding: 25,
+    backgroundColor: '#FFF',
+    paddingTop: 60,
+    borderBottomLeftRadius: 20,
+    borderBottomRightRadius: 20,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.05,
+    shadowRadius: 5,
+    elevation: 3,
   },
-  stepContainer: {
-    gap: 8,
-    marginBottom: 8,
+  saudacao: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    color: '#2D3436',
   },
-  reactLogo: {
-    height: 178,
-    width: 290,
-    bottom: 0,
-    left: 0,
-    position: 'absolute',
+  subSaudacao: {
+    fontSize: 14,
+    color: '#636E72',
+    marginTop: 4,
   },
+  botaoSair: {
+    backgroundColor: '#E63C3C', 
+    paddingHorizontal: 15,
+    paddingVertical: 8,
+    borderRadius: 20,
+  },
+  textoBotaoSair: {
+    color: '#D63031',
+    fontWeight: 'bold',
+  },
+  cardsContainer: {
+    padding: 20,
+    flexDirection: 'row', 
+    justifyContent: 'space-between',
+  },
+  card: {
+    width: '48%', 
+    backgroundColor: '#FFF',
+    padding: 20,
+    borderRadius: 15,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.05,
+    shadowRadius: 5,
+    elevation: 2,
+  },
+  cardTitulo: {
+    fontSize: 14,
+    color: '#636E72',
+    marginBottom: 10,
+  },
+  cardValor: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: '#2D3436',
+  }
 });
