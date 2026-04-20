@@ -30,8 +30,8 @@ export default function Login() {
       <View style={styles.card}>
         <FontAwesome5 name="paw" size={50} color="#FF7675" style={styles.logoIcon} />
         
-        <Text style={styles.titulo}>PetShop Admin</Text> 
-        <Text style={styles.subtitulo}>Faça login para gerenciar a loja</Text>
+        <Text style={styles.titulo}>PetControll</Text> 
+        <Text style={styles.subtitulo}>Faça login para usar o sistema</Text>
 
         <View style={styles.inputContainer}>
           <MaterialIcons name="email" size={20} color="#999" style={styles.inputIcon} />

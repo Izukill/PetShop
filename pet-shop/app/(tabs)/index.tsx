@@ -75,7 +75,7 @@ const styles = StyleSheet.create({
     marginTop: 4,
   },
   botaoSair: {
-    backgroundColor: '#E63C3C', 
+    backgroundColor: '#FC7E7E', 
     paddingHorizontal: 15,
     paddingVertical: 8,
     borderRadius: 20,

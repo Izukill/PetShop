@@ -1,35 +1,79 @@
 import { Tabs } from 'expo-router';
-import React from 'react';
+import { FontAwesome5, MaterialIcons, Ionicons } from '@expo/vector-icons';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import { HapticTab } from '@/components/haptic-tab';
-import { IconSymbol } from '@/components/ui/icon-symbol';
-import { Colors } from '@/constants/theme';
-import { useColorScheme } from '@/hooks/use-color-scheme';
+export default function TabsLayout() {
+  const insets = useSafeAreaInsets();
 
-export default function TabLayout() {
-  const colorScheme = useColorScheme();
+  //configurações de css do tabs precisa ser colocado dentro do componente para acessar o insets e ajustar o paddingBottom da tabBarStyle
+
+  const configuracaoDasAbas = {
+    tabBarActiveTintColor: '#FF7675',
+    tabBarInactiveTintColor: '#B2BEC3',
+    headerShown: true,
+    headerStyle: {
+      backgroundColor: '#FFFFFF',
+    },
+    headerTitleStyle: {
+      color: '#2D3436',
+      fontWeight: 'bold' as const, 
+    },
+    tabBarStyle: {
+      backgroundColor: '#FFFFFF',
+      borderTopWidth: 0,
+      elevation: 10,
+      shadowColor: '#000',
+      shadowOffset: { width: 0, height: -2 },
+      shadowOpacity: 0.1,
+      shadowRadius: 5,
+      height: 60 + insets.bottom,
+      paddingBottom: 10 + insets.bottom,
+    },
+  };
 
   return (
-    <Tabs
-      screenOptions={{
-        tabBarActiveTintColor: Colors[colorScheme ?? 'light'].tint,
-        headerShown: false,
-        tabBarButton: HapticTab,
-      }}>
+    <Tabs screenOptions={configuracaoDasAbas}>
+      
       <Tabs.Screen
         name="index"
         options={{
-          title: 'Home',
-          tabBarIcon: ({ color }) => <IconSymbol size={28} name="house.fill" color={color} />,
+          title: 'Início',
+          tabBarIcon: ({ color, size }) => <FontAwesome5 name="home" size={size} color={color} />,
         }}
       />
+
       <Tabs.Screen
-        name="explore"
+        name="agendamentos"
         options={{
-          title: 'Explore',
-          tabBarIcon: ({ color }) => <IconSymbol size={28} name="paperplane.fill" color={color} />,
+          title: 'Agenda',
+          tabBarIcon: ({ color, size }) => <FontAwesome5 name="calendar-alt" size={size} color={color} />,
         }}
       />
+
+      <Tabs.Screen
+        name="vendas"
+        options={{
+          title: 'Caixa',
+          tabBarIcon: ({ color, size }) => <FontAwesome5 name="cash-register" size={size} color={color} />,
+        }}
+      />
+
+      <Tabs.Screen
+        name="cadastros"
+        options={{
+          title: 'Cadastros',
+          tabBarIcon: ({ color, size }) => <Ionicons name="people" size={size} color={color} />,
+        }}
+      />
+
+      <Tabs.Screen
+        name="catalogo"
+        options={{
+          title: 'Catálogo',
+          tabBarIcon: ({ color, size }) => <MaterialIcons name="inventory" size={size} color={color} />,
+        }}
+      />
+      
     </Tabs>
   );
 }
