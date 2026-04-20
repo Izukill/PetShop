@@ -41,21 +41,18 @@ export class EnderecoService {
   }
 
   async findOne(id: number) {
-    try{
-      return await this.prisma.endereco.findUnique({
-        where: {id: id},
-        include: {
-          casa: true,
-        },
-      });
-    } catch (error) {
-      if (error instanceof Prisma.PrismaClientKnownRequestError) {
-        if (error.code === 'P2025') {
-          throw new NotFoundException(`Endereço com ID ${id} não encontrado.`);
-        }
-      }
-      throw error; 
+    const endereco = await this.prisma.endereco.findUnique({
+      where: {id: id},
+      include: {
+        casa: true,
+      },
+    });
+
+    if(!endereco){
+      throw new NotFoundException(`Endereço com ID ${id} não encontrado.`);
     }
+
+    return endereco;
   }
 
   async update(id: number, updateEnderecoDto: UpdateEnderecoDto) {

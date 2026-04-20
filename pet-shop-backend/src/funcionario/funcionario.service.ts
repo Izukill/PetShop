@@ -42,21 +42,18 @@ export class FuncionarioService {
   }
 
   async findOne(id: number) {
-    try{
-      return await this.prisma.funcionario.findUnique({
-        where: {id: id},
-        include: {
-          pessoa: true,
-        },
-      });
-    } catch (error){
-      if (error instanceof Prisma.PrismaClientKnownRequestError) {
-        if (error.code === 'P2025') {
-          throw new NotFoundException(`Funcionário com ID ${id} não encontrado.`);
-        }
-      }
-      throw error;
+    const funcionario = await this.prisma.funcionario.findUnique({
+      where: {id: id},
+      include: {
+        pessoa: true,
+      },
+    });
+
+    if(!funcionario){
+      throw new NotFoundException(`Funcionário com ID ${id} não encontrado.`);
     }
+
+    return funcionario;
   }
 
   async update(id: number, updateFuncionarioDto: UpdateFuncionarioDto) {

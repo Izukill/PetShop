@@ -28,18 +28,15 @@ export class TipoServicoService {
   }
 
   async findOne(id: number) {
-    try{
-      return await this.prisma.tipoServico.findUnique({
-        where: {id: id},
-      });
-    } catch (error){
-      if (error instanceof Prisma.PrismaClientKnownRequestError) {
-        if (error.code === 'P2025') {
-          throw new NotFoundException(`Tipo de serviço com ID ${id} não encontrado.`);
-        }
-      }
-      throw error; 
+    const tipoServico = await this.prisma.tipoServico.findUnique({
+      where: {id: id},
+    });
+
+    if(!tipoServico){
+      throw new NotFoundException(`Tipo de serviço com ID ${id} não encontrado.`);
     }
+
+    return tipoServico;
   }
 
   async update(id: number, updateTipoServicoDto: UpdateTipoServicoDto) {

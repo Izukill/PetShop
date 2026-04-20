@@ -45,23 +45,18 @@ export class ClienteService {
   }
 
   async findOne(id: number) {
-    try{
-      return await this.prisma.cliente.findUnique({
-        where: {
-          id: id,
-        },
-        include: {
-          pessoa: true,
-        },
-      });
-    } catch (error){
-      if (error instanceof Prisma.PrismaClientKnownRequestError) {
-        if (error.code === 'P2025') {
-          throw new NotFoundException(`Cliente com ID ${id} não encontrado.`);
-        }
-      }
-      throw error; 
+    const cliente = await this.prisma.cliente.findUnique({
+      where: { id: id },
+      include: {
+        pessoa: true,
+      },
+    });
+
+    if (!cliente) {
+      throw new NotFoundException(`Cliente com ID ${id} não encontrado.`);
     }
+
+    return cliente;
   }
 
   async update(id: number, updateClienteDto: UpdateClienteDto) {

@@ -34,7 +34,7 @@ export class VendaService {
 
         await this.vincularServicos(createVendaDto.servicosId, novaVenda.id, tx);
 
-        // Baixa no estoque ao vender (Tirar da prateleira)
+        //baixa no estoque ao vender (Tirar da prateleira)
         if (createVendaDto.itens && createVendaDto.itens.length > 0) {
           for (const item of createVendaDto.itens) {
             await tx.produto.update({
@@ -68,11 +68,10 @@ export class VendaService {
         servicos: true,
         cliente: true,
       },
-      orderBy: { data: 'desc' } // Dica extra: Retorna as vendas mais recentes primeiro
+      orderBy: { data: 'desc' } //Retorna as vendas mais recentes primeiro
     });
   }
 
-  // FindOne corrigido: findUnique não cai no catch, precisa do if!
   async findOne(id: number) {
     const venda = await this.prisma.venda.findUnique({
       where: { id: id },
@@ -103,14 +102,14 @@ export class VendaService {
           throw new NotFoundException(`Venda #${id} não encontrada.`);
         }
 
-        // 2. Analisa se precisa mexer no estoque
+        //analise se precisa mexer no estoque - se for cancelar, tem que devolver os produtos para o estoque, se for reativar, tem que tirar do estoque
         if (updateVendaDto.status === VendaStatus.CANCELADA && vendaAtual.status !== VendaStatus.CANCELADA) {
           await this.executarLogicaCancelamento(id, tx);
         } else if (updateVendaDto.status === VendaStatus.CONCLUIDA && vendaAtual.status === VendaStatus.CANCELADA) {
           await this.executarLogicaReativacao(id, tx);
         }
 
-        // 3. Efetiva a mudança de status
+        //faz a mudança
         return await tx.venda.update({
           where: { id: id },
           data: { status: updateVendaDto.status },

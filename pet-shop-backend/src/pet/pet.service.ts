@@ -38,21 +38,18 @@ export class PetService {
   }
 
   async findOne(id: number) {
-    try{
-      return await this.prisma.pet.findUnique({
-        where: {id: id},
-        include: {
-          dono: true,
-        },
-      });
-    } catch (error) {
-      if (error instanceof Prisma.PrismaClientKnownRequestError) {
-        if (error.code === 'P2025') {
-          throw new NotFoundException(`Pet com ID ${id} não encontrado.`);
-        }
-      }
-      throw error; 
+    const pet = await this.prisma.pet.findUnique({
+      where: {id: id},
+      include: {
+        dono: true,
+      },
+    });
+
+    if(!pet){
+      throw new NotFoundException(`Pet com ID ${id} não encontrado.`);
     }
+
+    return pet;
   }
 
   async update(id: number, updatePetDto: UpdatePetDto) {

@@ -29,17 +29,15 @@ export class ProdutoService {
   }
 
   async findOne(id: number) {
-    try{
-      return await this.prisma.produto.findUnique({
-        where: {id: id},
-      });
-    } catch (error){
-      if(error instanceof Prisma.PrismaClientKnownRequestError) {
-        if (error.code === 'P2025') {
-          throw new NotFoundException(`Produto com ID ${id} não encontrado.`);
-        }
-      }
+    const produto = await this.prisma.produto.findUnique({
+      where: {id: id},
+    });
+
+    if(!produto){
+      throw new NotFoundException(`Produto com ID ${id} não encontrado.`);
     }
+
+    return produto;
   }
 
   async update(id: number, updateProdutoDto: UpdateProdutoDto) {
