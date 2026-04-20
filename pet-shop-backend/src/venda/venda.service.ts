@@ -2,7 +2,7 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateVendaDto } from './dto/create-venda.dto';
 import { UpdateVendaDto } from './dto/update-venda.dto';
 import { PrismaService } from '../prisma/prisma.service';
-import { Prisma } from '@prisma/client';
+import { Prisma, VendaStatus } from '@prisma/client';
 
 @Injectable()
 export class VendaService {
@@ -29,12 +29,12 @@ export class VendaService {
                 precoUnitario: item.precoUnitario,
               })) || [],
             },
-            
           },
         });
 
         await this.vincularServicos(createVendaDto.servicosId, novaVenda.id, tx);
 
+        // Baixa no estoque ao vender (Tirar da prateleira)
         if (createVendaDto.itens && createVendaDto.itens.length > 0) {
           for (const item of createVendaDto.itens) {
             await tx.produto.update({
@@ -68,90 +68,70 @@ export class VendaService {
         servicos: true,
         cliente: true,
       },
+      orderBy: { data: 'desc' } // Dica extra: Retorna as vendas mais recentes primeiro
     });
   }
 
+  // FindOne corrigido: findUnique não cai no catch, precisa do if!
   async findOne(id: number) {
-    try{
-      return await this.prisma.venda.findUnique({
-        where: {id: id},
-        include: {
-          itens: true,
-          servicos: true,
-          cliente: true,
-        },
-      });
-    } catch (error) {
-      if (error instanceof Prisma.PrismaClientKnownRequestError) {
-        if (error.code === 'P2025') {
-          throw new NotFoundException(`Venda com ID ${id} não encontrada.`);
-        }
-      }
-      throw error;
+    const venda = await this.prisma.venda.findUnique({
+      where: { id: id },
+      include: {
+        itens: true,
+        servicos: true,
+        cliente: true,
+      },
+    });
+
+    if (!venda) {
+      throw new NotFoundException(`Venda com ID ${id} não encontrada.`);
     }
+
+    return venda;
   }
 
   async update(id: number, updateVendaDto: UpdateVendaDto) {
-    try{
-      return await this.prisma.venda.update({
-        where: {id: id},
-        data: {
-          status: updateVendaDto.status
-        },
-      });
-    } catch (error){
-      if (error instanceof Prisma.PrismaClientKnownRequestError) {
-        if (error.code === 'P2025') {
-          throw new NotFoundException(`Venda com ID ${id} não encontrada.`);
-        }
-      }
-      throw error;
-    }
-  }
-
-  async remove(id: number) {
     try {
       return await this.prisma.$transaction(async (tx) => {
-        const vendaCancelada = await tx.venda.update({
+
+        const vendaAtual = await tx.venda.findUnique({
           where: { id },
-          data: { 
-            status: 'CANCELADA' 
-          },
-        });
-        await tx.servico.updateMany({
-          where: { vendaId: id },
-          data: { vendaId: null }
+          include: { itens: true }
         });
 
-        const itensDaVenda = await tx.itemVenda.findMany({
-          where: { vendaId: id }
-        });
-      
-        for (const item of itensDaVenda) {
-          await tx.produto.update({
-            where: { id: item.produtoId },
-            data: {
-              quantidade: { increment: item.quantidade }
-            }
-          });
+        if (!vendaAtual) {
+          throw new NotFoundException(`Venda #${id} não encontrada.`);
         }
 
-        return vendaCancelada;
+        // 2. Analisa se precisa mexer no estoque
+        if (updateVendaDto.status === VendaStatus.CANCELADA && vendaAtual.status !== VendaStatus.CANCELADA) {
+          await this.executarLogicaCancelamento(id, tx);
+        } else if (updateVendaDto.status === VendaStatus.CONCLUIDA && vendaAtual.status === VendaStatus.CANCELADA) {
+          await this.executarLogicaReativacao(id, tx);
+        }
+
+        // 3. Efetiva a mudança de status
+        return await tx.venda.update({
+          where: { id: id },
+          data: { status: updateVendaDto.status },
+        });
       });
     } catch (error) {
-      if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === 'P2025') {
-        throw new NotFoundException(`Venda #${id} não encontrada.`);
-      }
+      if (error instanceof NotFoundException) throw error;
       throw error;
     }
   }
 
+  //soft delete - não remove do banco, apenas marca como cancelada (status)
+  async remove(id: number) {
+    return this.update(id, { status: VendaStatus.CANCELADA } as UpdateVendaDto);
+  }
 
-  //Funções auxiliares de create 
 
+  //funções auxiliares
+  
   private calcularTotalProdutos(itens: any[] | undefined): number {
     if (!itens || itens.length === 0) return 0;
-    
     return itens.reduce(
       (acc, item) => acc + (item.precoUnitario * item.quantidade), 
       0
@@ -174,7 +154,6 @@ export class VendaService {
 
   private async vincularServicos(servicosId: number[] | undefined, vendaId: number, tx: any): Promise<void> {
     if (!servicosId || servicosId.length === 0) return;
-
     await tx.servico.updateMany({
       where: { id: { in: servicosId } },
       data: { vendaId: vendaId },

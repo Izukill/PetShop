@@ -2,7 +2,7 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateServicoDto } from './dto/create-servico.dto';
 import { UpdateServicoDto } from './dto/update-servico.dto';
 import { PrismaService } from '../prisma/prisma.service';
-import { Prisma } from '@prisma/client';
+import { Prisma, ServicoStatus } from '@prisma/client';
 
 
 @Injectable()
@@ -52,26 +52,24 @@ export class ServicoService {
   }
 
   async findOne(id: number) {
-    try{
-      return await this.prisma.servico.findUnique({
-        where: {id: id},
-        include: {
-          tipoServico: true,
-          funcionario: {
-            include: {
-              pessoa: true,
-            },
+    const servico = await this.prisma.servico.findUnique({
+      where: {id: id},
+      include: {
+        tipoServico: true,
+        funcionario: {
+          include: {
+            pessoa: true,
           },
-          pet: true,
         },
-      });
-    } catch (error) {
-      if(error instanceof Prisma.PrismaClientKnownRequestError) {
-        if (error.code === 'P2025') {
-          throw new NotFoundException(`Serviço com ID ${id} não encontrado.`);
-        }
-      }
+        pet: true,
+      },
+    });
+
+    if (!servico) {
+      throw new NotFoundException(`Serviço com ID ${id} não encontrado.`);
     }
+
+    return servico;
   }
 
   async update(id: number, updateServicoDto: UpdateServicoDto) {
@@ -115,7 +113,7 @@ export class ServicoService {
         where: { id: id },
         data: {
           dataExecucao: new Date(), 
-          status: 'FINALIZADO',     
+          status: ServicoStatus.CONCLUIDO,     
         },
         include: {
           tipoServico: true,

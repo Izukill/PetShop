@@ -228,8 +228,8 @@ model Venda{
 
   cliente Cliente @relation(fields: [clienteId], references: [id])
 
-  item_venda ItemVenda[]
+  itens ItemVenda[]
 
-  servico Servico[]
+  servicos Servico[]
 
 }

@@ -1,10 +1,11 @@
 import {IsNotEmpty, IsString, IsInt, IsNumber, IsDate, IsOptional, IsEnum } from 'class-validator';
+import { ServicoStatus } from '@prisma/client';
 
 export class CreateServicoDto {
 
     @IsNotEmpty({message: 'O status é obrigatório.'})
-    @IsEnum(['AGENDADO', 'ANDAMENTO', 'CONCLUIDO', 'CANCELADO'], { message: 'Status inválido. Use AGENDADO, ANDAMENTO, CONCLUIDO ou CANCELADO' })
-    status!: string;
+    @IsEnum(ServicoStatus, { message: 'Status inválido. Use AGENDADO, ANDAMENTO, CONCLUIDO ou CANCELADO' })
+    status!: ServicoStatus;
 
     @IsOptional()
     @IsString({message: 'A observação deve ser uma string.'})
