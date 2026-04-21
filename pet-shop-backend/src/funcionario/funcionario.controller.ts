@@ -31,21 +31,21 @@ export class FuncionarioController {
     return this.funcionarioService.findAll();
   }
 
-  @Get(':id')
+  @Get(':lookupId')
   @ApiDocBuscarFuncionarioPorId()
-  findOne(@Param('id') id: string) {
-    return this.funcionarioService.findOne(+id);
+  findOne(@Param('lookupId') lookupId: string) {
+    return this.funcionarioService.findOne(lookupId);
   }
 
-  @Patch(':id')
+  @Patch(':lookupId')
   @ApiDocAtualizarFuncionario()
-  update(@Param('id') id: string, @Body() updateFuncionarioDto: UpdateFuncionarioDto) {
-    return this.funcionarioService.update(+id, updateFuncionarioDto);
+  update(@Param('lookupId') lookupId: string, @Body() updateFuncionarioDto: UpdateFuncionarioDto) {
+    return this.funcionarioService.update(lookupId, updateFuncionarioDto);
   }
 
-  @Delete(':id')
+  @Delete(':lookupId')
   @ApiDocRemoverFuncionario()
-  remove(@Param('id') id: string) {
-    return this.funcionarioService.remove(+id);
+  remove(@Param('lookupId') lookupId: string) {
+    return this.funcionarioService.remove(lookupId);
   }
 }

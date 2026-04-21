@@ -22,9 +22,9 @@ export class CreateEnderecoDto {
     @IsString({message: 'O cep deve ser uma string.'})
     cep!: string;
 
-    @ApiProperty({ description: 'ID do cliente associado ao endereço', example: 1 })
+    @ApiProperty({ description: 'LookupId do cliente associado ao endereço', example: 1 })
     @IsNotEmpty({message: 'O cliente é obrigatório.'})
-    @IsInt({ message: 'O ID do cliente deve ser um número inteiro' })
-    clienteId!: number;
+    @IsString({message: 'O clientelookupId deve ser uma string.'})
+    clientelookupId!: string;
 
 }

@@ -25,7 +25,7 @@ export function ApiDocListarFuncionarios() {
 export function ApiDocBuscarFuncionarioPorId() {
   return applyDecorators(
     ApiOperation({ summary: 'Busca a ficha de um funcionário específico' }),
-    ApiParam({ name: 'id', description: 'Código identificador (ID) do funcionário', example: 3 }),
+    ApiParam({ name: 'lookupId', description: 'Código identificador (lookupId) do funcionário', example: 3 }),
     ApiResponse({ status: 200, description: 'Ficha do funcionário encontrada com sucesso.' }),
     ApiResponse({ status: 404, description: 'Funcionário não encontrado no banco de dados.' })
   );
@@ -37,7 +37,7 @@ export function ApiDocAtualizarFuncionario() {
       summary: 'Atualiza os dados de um funcionário',
       description: 'Permite alterar o cargo, salário, ou dados pessoais do colaborador. **Nota:** Se a senha for enviada na atualização, ela também será re-criptografada.'
     }),
-    ApiParam({ name: 'id', description: 'Código identificador (ID) do funcionário', example: 3 }),
+    ApiParam({ name: 'lookupId', description: 'Código identificador (lookupId) do funcionário', example: 3 }),
     ApiResponse({ status: 200, description: 'Dados do funcionário atualizados com sucesso.' }),
     ApiResponse({ status: 404, description: 'Funcionário não encontrado.' })
   );
@@ -49,7 +49,7 @@ export function ApiDocRemoverFuncionario() {
       summary: 'Remove o acesso de um funcionário',
       description: 'Exclui ou desativa o colaborador. Ao fazer isso, o token JWT dele perderá a validade e ele não poderá mais logar no sistema.'
     }),
-    ApiParam({ name: 'id', description: 'Código identificador (ID) do funcionário a ser desligado', example: 3 }),
+    ApiParam({ name: 'lookupId', description: 'Código identificador (lookupId) do funcionário a ser desligado', example: 3 }),
     ApiResponse({ status: 200, description: 'Funcionário removido e acesso revogado com sucesso.' }),
     ApiResponse({ status: 404, description: 'Funcionário não encontrado.' })
   );

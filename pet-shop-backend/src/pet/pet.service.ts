@@ -16,13 +16,15 @@ export class PetService {
           nome: createPetDto.nome,
           raca: createPetDto.raca,
           especie: createPetDto.especie,
-          clienteId: createPetDto.clienteId,
+          dono: {
+            connect: {lookupId: createPetDto.clientelookupId},
+          }
         },
       });
     } catch (error) {
       if (error instanceof Prisma.PrismaClientKnownRequestError) {
-        if (error.code === 'P2003') {
-          throw new NotFoundException(`Não é possível cadastrar endereço. Cliente com ID ${createPetDto.clienteId} não encontrado.`);
+        if (error.code === 'P2025') {
+          throw new NotFoundException(`Não é possível cadastrar pet. Cliente com lookupId ${createPetDto.clientelookupId} não encontrado.`);
         }
       }
       throw error; 
@@ -37,25 +39,25 @@ export class PetService {
     });
   }
 
-  async findOne(id: number) {
+  async findOne(lookupId: string) {
     const pet = await this.prisma.pet.findUnique({
-      where: {id: id},
+      where: {lookupId: lookupId},
       include: {
         dono: true,
       },
     });
 
     if(!pet){
-      throw new NotFoundException(`Pet com ID ${id} não encontrado.`);
+      throw new NotFoundException(`Pet com lookupId ${lookupId} não encontrado.`);
     }
 
     return pet;
   }
 
-  async update(id: number, updatePetDto: UpdatePetDto) {
+  async update(lookupId: string, updatePetDto: UpdatePetDto) {
     try{
       return await this.prisma.pet.update({
-        where: {id: id},
+        where: {lookupId: lookupId},
         data: {
           nome: updatePetDto.nome,
           raca: updatePetDto.raca,
@@ -65,22 +67,22 @@ export class PetService {
     } catch (error) {
       if (error instanceof Prisma.PrismaClientKnownRequestError) {
         if (error.code === 'P2025') {
-          throw new NotFoundException(`Pet com ID ${id} não encontrado.`);
+          throw new NotFoundException(`Pet com lookupId ${lookupId} não encontrado.`);
         }
       }
       throw error;
     }
   }
 
-  async remove(id: number) {
+  async remove(lookupId: string) {
     try{
       return await this.prisma.pet.delete({
-        where: {id: id},
+        where: {lookupId: lookupId},
       });
     } catch (error){
       if (error instanceof Prisma.PrismaClientKnownRequestError) {
         if (error.code === 'P2025') {
-          throw new NotFoundException(`Pet com ID ${id} não encontrado.`);
+          throw new NotFoundException(`Pet com lookupId ${lookupId} não encontrado.`);
         }
       }
       throw error;

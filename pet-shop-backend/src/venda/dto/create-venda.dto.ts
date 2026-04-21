@@ -1,12 +1,12 @@
-import { IsNotEmpty, IsNumber, IsInt, IsArray, ValidateNested, IsEnum } from 'class-validator';
+import { IsNotEmpty, IsNumber, IsInt, IsArray, ValidateNested, IsEnum, IsString } from 'class-validator';
 import { VendaStatus } from '@prisma/client';
 import { Type } from 'class-transformer';
 import { ApiProperty } from '@nestjs/swagger';
 
 class ItemVendaDto {
-  @ApiProperty({ description: 'ID do produto', example: 10 })
-  @IsInt() 
-  produtoId!: number;    
+  @ApiProperty({ description: 'lookupId do produto', example: 10 })
+  @IsString()
+  produtolookupId!: string;    
   
   @ApiProperty({ description: 'Preço cobrado por unidade', example: 45.90 })
   @IsNumber() 
@@ -26,10 +26,10 @@ export class CreateVendaDto {
     @IsNotEmpty({ message: 'O status da venda é obrigatório.' })
     status!: VendaStatus;
 
-    @ApiProperty({ description: 'ID do cliente associado à venda', example: 1 })
+    @ApiProperty({ description: 'lookupId do cliente associado à venda', example: 1 })
     @IsNotEmpty({message: 'O cliente é obrigatório.'})
-    @IsInt({ message: 'O clienteId deve ser um número inteiro' })
-    clienteId!: number;
+    @IsString({message: 'lookupId do cliente deve ser uma string'})
+    clientelookupId!: string;
 
     @ApiProperty({ description: 'Itens da venda', type: [ItemVendaDto] })
     @IsArray()
@@ -37,9 +37,9 @@ export class CreateVendaDto {
     @Type(() => ItemVendaDto)
     itens!: ItemVendaDto[];
 
-    @ApiProperty({ description: 'IDs dos serviços associados à venda', example: [1, 2, 3],type: [Number] })
+    @ApiProperty({ description: 'lookupIds dos serviços associados à venda', example: ['as%$¨Tgdfsdf', 'ADvfdser1234f', '#5gfsdGsgr'],type: [String] })
     @IsArray()
-    @IsInt({ each: true })
-    servicosId!: number[];
+    @IsString({ each: true })
+    servicoslookupId!: string[];
 
 }

@@ -27,22 +27,22 @@ export class TipoServicoService {
     return await this.prisma.tipoServico.findMany();
   }
 
-  async findOne(id: number) {
+  async findOne(lookupId: string) {
     const tipoServico = await this.prisma.tipoServico.findUnique({
-      where: {id: id},
+      where: {lookupId: lookupId},
     });
 
     if(!tipoServico){
-      throw new NotFoundException(`Tipo de serviço com ID ${id} não encontrado.`);
+      throw new NotFoundException(`Tipo de serviço com lookupId ${lookupId} não encontrado.`);
     }
 
     return tipoServico;
   }
 
-  async update(id: number, updateTipoServicoDto: UpdateTipoServicoDto) {
+  async update(lookupId: string, updateTipoServicoDto: UpdateTipoServicoDto) {
     try{
       return await this.prisma.tipoServico.update({
-        where: {id: id},
+        where: {lookupId: lookupId},
         data: {
           nome: updateTipoServicoDto.nome,
           descricao: updateTipoServicoDto.descricao,
@@ -52,16 +52,16 @@ export class TipoServicoService {
     } catch (error){
       if(error instanceof Prisma.PrismaClientKnownRequestError){
         if (error.code === 'P2025') {
-          throw new NotFoundException(`Tipo de serviço com ID ${id} não encontrado.`);
+          throw new NotFoundException(`Tipo de serviço com lookupId ${lookupId} não encontrado.`);
         }
       }
     }
   }
 
-  async remove(id: number) {
+  async remove(lookupId: string) {
     try{
       await this.prisma.tipoServico.update({
-        where: {id: id},
+        where: {lookupId: lookupId},
         data: {
           ativo: false,
         }
@@ -69,7 +69,7 @@ export class TipoServicoService {
     }catch (error){
       if(error instanceof Prisma.PrismaClientKnownRequestError){
         if (error.code === 'P2025') {
-          throw new NotFoundException(`Tipo de serviço com ID ${id} não encontrado.`);
+          throw new NotFoundException(`Tipo de serviço com lookupId ${lookupId} não encontrado.`);
         }
       }
     }

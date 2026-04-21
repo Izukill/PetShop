@@ -31,21 +31,21 @@ export class VendaController {
     return this.vendaService.findAll();
   }
 
-  @Get(':id')
+  @Get(':lookupId')
   @ApiDocBuscarVendaPorId()
-  findOne(@Param('id') id: string) {
-    return this.vendaService.findOne(+id);
+  findOne(@Param('lookupId') lookupId: string) {
+    return this.vendaService.findOne(lookupId);
   }
 
-  @Patch(':id')
+  @Patch(':lookupId')
   @ApiDocAtualizarVenda()
-  update(@Param('id') id: string, @Body() updateVendaDto: UpdateVendaDto) {
-    return this.vendaService.update(+id, updateVendaDto);
+  update(@Param('lookupId') lookupId: string, @Body() updateVendaDto: UpdateVendaDto) {
+    return this.vendaService.update(lookupId, updateVendaDto);
   }
 
-  @Delete(':id')
+  @Delete(':lookupId')
   @ApiDocRemoverVenda()
-  remove(@Param('id') id: string) {
-    return this.vendaService.remove(+id);
+  remove(@Param('lookupId') lookupId: string) {
+    return this.vendaService.remove(lookupId);
   }
 }

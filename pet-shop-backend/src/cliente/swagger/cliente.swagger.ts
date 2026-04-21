@@ -25,7 +25,7 @@ export function ApiDocListarClientes() {
 export function ApiDocBuscarClientePorId() {
   return applyDecorators(
     ApiOperation({ summary: 'Busca a ficha completa de um cliente' }),
-    ApiParam({ name: 'id', description: 'Código identificador (ID) do cliente', example: 10 }),
+    ApiParam({ name: 'lookupId', description: 'Código identificador (lookupId) do cliente', example: 10 }),
     ApiResponse({ status: 200, description: 'Ficha do cliente encontrada com sucesso.' }),
     ApiResponse({ status: 404, description: 'Cliente não encontrado no banco de dados.' })
   );
@@ -37,7 +37,7 @@ export function ApiDocAtualizarCliente() {
       summary: 'Atualiza os dados de contato do cliente',
       description: 'Permite corrigir informações pessoais como telefone, e-mail ou nome.'
     }),
-    ApiParam({ name: 'id', description: 'Código identificador (ID) do cliente', example: 10 }),
+    ApiParam({ name: 'lookupId', description: 'Código identificador (lookupId) do cliente', example: 10 }),
     ApiResponse({ status: 200, description: 'Dados do cliente atualizados com sucesso.' }),
     ApiResponse({ status: 404, description: 'Cliente não encontrado para atualização.' })
   );
@@ -49,7 +49,7 @@ export function ApiDocRemoverCliente() {
       summary: 'Remove o cadastro de um cliente',
       description: 'Exclui o cliente do sistema. **Atenção:** A exclusão pode falhar (Erro 409 ou 500) caso o cliente já possua Pets ou Vendas atreladas a ele, garantindo a integridade do banco de dados.'
     }),
-    ApiParam({ name: 'id', description: 'Código identificador (ID) do cliente a ser removido', example: 10 }),
+    ApiParam({ name: 'lookupId', description: 'Código identificador (lookupId) do cliente a ser removido', example: 10 }),
     ApiResponse({ status: 200, description: 'Cadastro do cliente removido com sucesso.' }),
     ApiResponse({ status: 404, description: 'Cliente não encontrado.' })
   );

@@ -27,26 +27,26 @@ export class CreateServicoDto {
     @ApiProperty({ description: 'Preço unitário do serviço', example: 150.00 })
     @IsNotEmpty({message: 'O preço unitário é obrigatório.'})
     @IsDecimal()
-    precoUnitario!: number;
+    precoUnitario!: string;
 
-    @ApiProperty({ description: 'ID do tipo de serviço associado ao serviço', example: 1 })
+    @ApiProperty({ description: 'lookupId do tipo de serviço associado ao serviço', example: 1 })
     @IsNotEmpty({message: 'O tipo de serviço é obrigatório.'})
-    @IsInt({ message: 'O ID do tipo de serviço deve ser um número inteiro' })
-    tipoServicoId!: number;
+    @IsInt({ message: 'O lookupId do tipo de serviço deve ser um número inteiro' })
+    tipoServicolookupId!: string;
 
-    @ApiProperty({ description: 'ID do pet associado ao serviço', example: 1 })
+    @ApiProperty({ description: 'lookupId do pet associado ao serviço', example: 1 })
     @IsNotEmpty({message: 'O pet é obrigatório.'})
-    @IsInt({ message: 'O ID do pet deve ser um número inteiro' })
-    petId!: number;
+    @IsInt({ message: 'O lookupId do pet deve ser um número inteiro' })
+    petlookupId!: string;
 
-    @ApiProperty({ description: 'ID do funcionário associado ao serviço', example: 1 })
+    @ApiProperty({ description: 'lookupId do funcionário associado ao serviço', example: 1 })
     @IsNotEmpty({message: 'O funcionário é obrigatório.'})
-    @IsInt({ message: 'O ID do funcionário deve ser um número inteiro' })
-    funcionarioId!: number;
+    @IsInt({ message: 'O lookupId do funcionário deve ser um número inteiro' })
+    funcionariolookupId!: string;
 
-    @ApiProperty({ description: 'ID da venda associada ao serviço', example: 1, required: false })
+    @ApiProperty({ description: 'lookupId da venda associada ao serviço', example: 1, required: false })
     @IsOptional()
-    @IsInt({ message: 'O ID da venda deve ser um número inteiro' })
-    vendaId?: number;
+    @IsString({message: 'O lookupId da venda deve ser uma string.'})
+    vendalookupId?: string;
 
 }

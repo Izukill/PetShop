@@ -8,7 +8,7 @@ export function ApiDocCriarVenda() {
       description: 'Calcula o valor final somando produtos e serviços, cria o registro da venda e **desconta a quantidade dos produtos no estoque** automaticamente.' 
     }),
     ApiResponse({ status: 201, description: 'Venda registrada e estoque atualizado com sucesso.' }),
-    ApiResponse({ status: 400, description: 'Dados de entrada inválidos (ex: falta do ID do cliente).' }),
+    ApiResponse({ status: 400, description: 'Dados de entrada inválidos (ex: falta do lookupId do cliente).' }),
     ApiResponse({ status: 404, description: 'Um ou mais produtos/serviços não foram encontrados.' })
   );
 }
@@ -26,9 +26,9 @@ export function ApiDocListarVendas() {
 export function ApiDocBuscarVendaPorId() {
   return applyDecorators(
     ApiOperation({ summary: 'Busca os detalhes de uma venda específica' }),
-    ApiParam({ name: 'id', description: 'ID numérico da venda', example: 15 }),
+    ApiParam({ name: 'lookupId', description: 'lookupId numérico da venda', example: '$5fDFhgfdr#' }),
     ApiResponse({ status: 200, description: 'Venda encontrada e retornada com sucesso.' }),
-    ApiResponse({ status: 404, description: 'Nenhuma venda encontrada com o ID informado.' })
+    ApiResponse({ status: 404, description: 'Nenhuma venda encontrada com o lookupId informado.' })
   );
 }
 
@@ -38,7 +38,7 @@ export function ApiDocAtualizarVenda() {
       summary: 'Atualiza o status de uma venda',
       description: 'Permite mudar o status da venda (ex: de CONCLUIDA para CANCELADA). **Se cancelada, os produtos retornam ao estoque e os serviços são desvinculados.**'
     }),
-    ApiParam({ name: 'id', description: 'ID numérico da venda a ser atualizada', example: 15 }),
+    ApiParam({ name: 'lookupId', description: 'lookupId numérico da venda a ser atualizada', example: '$5fDFhgfdr#' }),
     ApiResponse({ status: 200, description: 'Status da venda atualizado e estoque corrigido.' }),
     ApiResponse({ status: 404, description: 'Venda não encontrada para atualização.' })
   );
@@ -50,7 +50,7 @@ export function ApiDocRemoverVenda() {
       summary: 'Cancela uma venda (Soft Delete)',
       description: 'Este endpoint é um atalho que muda o status da venda para CANCELADA, acionando a mesma lógica de devolução de estoque do endpoint de atualização.'
     }),
-    ApiParam({ name: 'id', description: 'ID numérico da venda a ser cancelada', example: 15 }),
+    ApiParam({ name: 'lookupId', description: 'lookupId numérico da venda a ser cancelada', example: '$5fDFhgfdr#' }),
     ApiResponse({ status: 200, description: 'Venda cancelada com sucesso.' }),
     ApiResponse({ status: 404, description: 'Venda não encontrada para cancelamento.' })
   );

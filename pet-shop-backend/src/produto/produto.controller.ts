@@ -31,21 +31,21 @@ export class ProdutoController {
     return this.produtoService.findAll();
   }
 
-  @Get(':id')
+  @Get(':lookupId')
   @ApiDocBuscarProdutoPorId()
-  findOne(@Param('id') id: string) {
-    return this.produtoService.findOne(+id);
+  findOne(@Param('lookupId') lookupId: string) {
+    return this.produtoService.findOne(lookupId);
   }
 
-  @Patch(':id')
+  @Patch(':lookupId')
   @ApiDocAtualizarProduto()
-  update(@Param('id') id: string, @Body() updateProdutoDto: UpdateProdutoDto) {
-    return this.produtoService.update(+id, updateProdutoDto);
+  update(@Param('lookupId') lookupId: string, @Body() updateProdutoDto: UpdateProdutoDto) {
+    return this.produtoService.update(lookupId, updateProdutoDto);
   }
 
-  @Delete(':id')
+  @Delete(':lookupId')
   @ApiDocRemoverProduto()
-  remove(@Param('id') id: string) {
-    return this.produtoService.remove(+id);
+  remove(@Param('lookupId') lookupId: string) {
+    return this.produtoService.remove(lookupId);
   }
 }

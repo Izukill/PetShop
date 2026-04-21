@@ -31,21 +31,21 @@ export class TipoServicoController {
     return this.tipoServicoService.findAll();
   }
 
-  @Get(':id')
+  @Get(':lookupId')
   @ApiDocBuscarTipoServicoPorId()
-  findOne(@Param('id') id: string) {
-    return this.tipoServicoService.findOne(+id);
+  findOne(@Param('lookupId') lookupId: string) {
+    return this.tipoServicoService.findOne(lookupId);
   }
 
-  @Patch(':id')
+  @Patch(':lookupId')
   @ApiDocAtualizarTipoServico()
-  update(@Param('id') id: string, @Body() updateTipoServicoDto: UpdateTipoServicoDto) {
-    return this.tipoServicoService.update(+id, updateTipoServicoDto);
+  update(@Param('lookupId') lookupId: string, @Body() updateTipoServicoDto: UpdateTipoServicoDto) {
+    return this.tipoServicoService.update(lookupId, updateTipoServicoDto);
   }
 
-  @Delete(':id')
+  @Delete(':lookupId')
   @ApiDocRemoverTipoServico()
-  remove(@Param('id') id: string) {
-    return this.tipoServicoService.remove(+id);
+  remove(@Param('lookupId') lookupId: string) {
+    return this.tipoServicoService.remove(lookupId);
   }
 }

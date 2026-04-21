@@ -18,9 +18,9 @@ export class CreatePetDto {
     @IsString({message: 'A raça deve ser uma string.'})
     raca!: string;
 
-    @ApiProperty({ description: 'ID do cliente dono do pet', example: 1 })
-    @IsNotEmpty({message: 'O ID do cliente é obrigatório'})
-    @IsInt({ message: 'O ID do cliente deve ser um número inteiro' })
-    clienteId!: number;
+    @ApiProperty({ description: 'lookupId do cliente dono do pet', example: 1 })
+    @IsNotEmpty({message: 'O lookupId do cliente é obrigatório'})
+    @IsString({message: 'O lookupId do cliente deve ser uma string.'})
+    clientelookupId!: string;
 
 }

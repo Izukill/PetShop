@@ -19,13 +19,15 @@ export class EnderecoService {
           numero: createEnderecoDto.numero,
           cep: createEnderecoDto.cep,
           complemento: createEnderecoDto.complemento,
-          clienteId: createEnderecoDto.clienteId,
+          casa: {
+            connect: { lookupId: createEnderecoDto.clientelookupId }
+          }
         },
       });
     } catch (error) {
       if (error instanceof Prisma.PrismaClientKnownRequestError) {
-        if (error.code === 'P2003') {
-          throw new NotFoundException(`Não é possível cadastrar endereço. Cliente com ID ${createEnderecoDto.clienteId} não encontrado.`);
+        if (error.code === 'P2025') {
+          throw new NotFoundException(`Não é possível cadastrar endereço. Cliente com lookupId ${createEnderecoDto.clientelookupId} não encontrado.`);
         }
       }
       throw error; 
@@ -40,25 +42,25 @@ export class EnderecoService {
     });
   }
 
-  async findOne(id: number) {
+  async findOne(lookupId: string) {
     const endereco = await this.prisma.endereco.findUnique({
-      where: {id: id},
+      where: {lookupId: lookupId},
       include: {
         casa: true,
       },
     });
 
     if(!endereco){
-      throw new NotFoundException(`Endereço com ID ${id} não encontrado.`);
+      throw new NotFoundException(`Endereço com lookupId ${lookupId} não encontrado.`);
     }
 
     return endereco;
   }
 
-  async update(id: number, updateEnderecoDto: UpdateEnderecoDto) {
+  async update(lookupId: string, updateEnderecoDto: UpdateEnderecoDto) {
     try{
       return await this.prisma.endereco.update({
-        where: {id: id},
+        where: {lookupId: lookupId},
         data: {
           rua: updateEnderecoDto.rua,
           numero: updateEnderecoDto.numero,
@@ -69,22 +71,22 @@ export class EnderecoService {
     } catch (error) {
       if (error instanceof Prisma.PrismaClientKnownRequestError) {
         if (error.code === 'P2025') {
-          throw new NotFoundException(`Endereço com ID ${id} não encontrado.`);
+          throw new NotFoundException(`Endereço com lookupId ${lookupId} não encontrado.`);
         }
       }
       throw error; 
     }
   }
 
-  async remove(id: number) {
+  async remove(lookupId: string) {
     try{
       return await this.prisma.endereco.delete({
-        where: {id: id},
+        where: {lookupId: lookupId},
       });
     } catch (error) {
       if (error instanceof Prisma.PrismaClientKnownRequestError) {
         if (error.code === 'P2025') {
-          throw new NotFoundException(`Endereço com ID ${id} não encontrado.`);
+          throw new NotFoundException(`Endereço com lookupId ${lookupId} não encontrado.`);
         }
       }
       throw error; 

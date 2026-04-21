@@ -31,21 +31,21 @@ export class PetController {
     return this.petService.findAll();
   }
 
-  @Get(':id')
+  @Get(':lookupId')
   @ApiDocBuscarPetPorId()
-  findOne(@Param('id') id: string) {
-    return this.petService.findOne(+id);
+  findOne(@Param('lookupId') lookupId: string) {
+    return this.petService.findOne(lookupId);
   }
 
-  @Patch(':id')
+  @Patch(':lookupId')
   @ApiDocAtualizarPet()
-  update(@Param('id') id: string, @Body() updatePetDto: UpdatePetDto) {
-    return this.petService.update(+id, updatePetDto);
+  update(@Param('lookupId') lookupId: string, @Body() updatePetDto: UpdatePetDto) {
+    return this.petService.update(lookupId, updatePetDto);
   }
 
-  @Delete(':id')
+  @Delete(':lookupId')
   @ApiDocRemoverPet()
-  remove(@Param('id') id: string) {
-    return this.petService.remove(+id);
+  remove(@Param('lookupId') lookupId: string) {
+    return this.petService.remove(lookupId);
   }
 }

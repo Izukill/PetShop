@@ -9,14 +9,10 @@ export class ClienteService {
 
   constructor(private readonly prisma: PrismaService) {}
 
-
   async create(createClienteDto: CreateClienteDto) {
-
     const novoCliente = await this.prisma.cliente.create({
       data:{
-
         numero: createClienteDto.numero,
-        
         //criando a instância de pessoa dentro do clienteService
         pessoa: {
           create: {
@@ -32,10 +28,8 @@ export class ClienteService {
     });
 
     return novoCliente;
-
   }
     
-
   async findAll() {
     return await this.prisma.cliente.findMany({
       include: {
@@ -44,26 +38,26 @@ export class ClienteService {
     });
   }
 
-  async findOne(id: number) {
+  async findOne(lookupId: string) {
     const cliente = await this.prisma.cliente.findUnique({
-      where: { id: id },
+      where: { lookupId: lookupId }, 
       include: {
         pessoa: true,
       },
     });
 
     if (!cliente) {
-      throw new NotFoundException(`Cliente com ID ${id} não encontrado.`);
+      throw new NotFoundException(`Cliente não encontrado.`);
     }
 
     return cliente;
   }
 
-  async update(id: number, updateClienteDto: UpdateClienteDto) {
-
+  // 2. ALTERADO: Recebe lookupId
+  async update(lookupId: string, updateClienteDto: UpdateClienteDto) {
     try{
       return await this.prisma.cliente.update({
-        where: { id: id },
+        where: { lookupId: lookupId },
         data: {
           numero: updateClienteDto.numero,
           pessoa: {
@@ -80,18 +74,17 @@ export class ClienteService {
     } catch (error){
       if (error instanceof Prisma.PrismaClientKnownRequestError) {
         if (error.code === 'P2025') {
-          throw new NotFoundException(`Cliente com ID ${id} não encontrado.`);
+          throw new NotFoundException(`Cliente não encontrado.`);
         }
       }
       throw error; 
     }
   }
 
-  async remove(id: number) {
-
+  async remove(lookupId: string) {
     try{
       return await this.prisma.cliente.update({
-        where: { id: id },
+        where: { lookupId: lookupId },
         data:{
           pessoa: {
             update:{
@@ -104,7 +97,7 @@ export class ClienteService {
     } catch (error){
       if (error instanceof Prisma.PrismaClientKnownRequestError) {
         if (error.code === 'P2025') {
-          throw new NotFoundException(`Cliente com ID ${id} não encontrado.`);
+          throw new NotFoundException(`Cliente não encontrado.`);
         }
       }
       throw error; 

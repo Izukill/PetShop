@@ -47,25 +47,25 @@ export class FuncionarioService {
     });
   }
 
-  async findOne(id: number) {
+  async findOne(lookupId: string) {
     const funcionario = await this.prisma.funcionario.findUnique({
-      where: {id: id},
+      where: {lookupId: lookupId},
       include: {
         pessoa: true,
       },
     });
 
     if(!funcionario){
-      throw new NotFoundException(`Funcionário com ID ${id} não encontrado.`);
+      throw new NotFoundException(`Funcionário com lookupId ${lookupId} não encontrado.`);
     }
 
     return funcionario;
   }
 
-  async update(id: number, updateFuncionarioDto: UpdateFuncionarioDto) {
+  async update(lookupId: string, updateFuncionarioDto: UpdateFuncionarioDto) {
     try{
       return await this.prisma.funcionario.update({
-        where: {id: id},
+        where: {lookupId: lookupId},
         data: {
           especializacao: updateFuncionarioDto.especializacao,
           matricula: updateFuncionarioDto.matricula,
@@ -84,16 +84,16 @@ export class FuncionarioService {
     } catch (error){
       if (error instanceof Prisma.PrismaClientKnownRequestError) {
         if (error.code === 'P2025') {
-          throw new NotFoundException(`Funcionário com ID ${id} não encontrado.`);
+          throw new NotFoundException(`Funcionário com lookupId ${lookupId} não encontrado.`);
         }
       }
     }
   }
 
-  async remove(id: number) {
+  async remove(lookupId: string) {
     try{
       return await this.prisma.funcionario.update({
-        where: {id: id},
+        where: {lookupId: lookupId},
         data: {
           pessoa:{
             update: {
@@ -105,7 +105,7 @@ export class FuncionarioService {
     } catch (error){
       if (error instanceof Prisma.PrismaClientKnownRequestError) {
         if (error.code === 'P2025') {
-          throw new NotFoundException(`Funcionário com ID ${id} não encontrado.`);
+          throw new NotFoundException(`Funcionário com lookupId ${lookupId} não encontrado.`);
         }
       }
     }

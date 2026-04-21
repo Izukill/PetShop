@@ -32,28 +32,28 @@ export class ServicoController {
     return this.servicoService.findAll();
   }
 
-  @Get(':id')
+  @Get(':lookupId')
   @ApiDocBuscarServicoPorId()
-  findOne(@Param('id') id: string) {
-    return this.servicoService.findOne(+id);
+  findOne(@Param('lookupId') lookupId: string) {
+    return this.servicoService.findOne(lookupId);
   }
 
-  @Patch(':id')
+  @Patch(':lookupId')
   @ApiDocAtualizarServico()
-  update(@Param('id') id: string, @Body() updateServicoDto: UpdateServicoDto) {
-    return this.servicoService.update(+id, updateServicoDto);
+  update(@Param('lookupId') lookupId: string, @Body() updateServicoDto: UpdateServicoDto) {
+    return this.servicoService.update(lookupId, updateServicoDto);
   }
 
-  @Delete(':id')
+  @Delete(':lookupId')
   @ApiDocRemoverServico()
-  remove(@Param('id') id: string) {
-    return this.servicoService.remove(+id);
+  remove(@Param('lookupId') lookupId: string) {
+    return this.servicoService.remove(lookupId);
   }
 
-  @Patch(':id/finalizar')
+  @Patch(':lookupId/finalizar')
   @ApiDocFinalizarServico()
-  finalizar(@Param ('id') id: string) {
-    return this.servicoService.finalizar(+id);
+  finalizar(@Param ('lookupId') lookupId: string) {
+    return this.servicoService.finalizar(lookupId);
   }
 
 }

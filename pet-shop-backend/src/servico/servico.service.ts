@@ -3,6 +3,7 @@ import { CreateServicoDto } from './dto/create-servico.dto';
 import { UpdateServicoDto } from './dto/update-servico.dto';
 import { PrismaService } from '../prisma/prisma.service';
 import { Prisma, ServicoStatus } from '@prisma/client';
+import { connect } from 'node:http2';
 
 
 @Injectable()
@@ -18,9 +19,15 @@ export class ServicoService {
           status: createServicoDto.status,
           observacao: createServicoDto.observacao,
           precoUnitario: createServicoDto.precoUnitario,
-          tipoServicoId: createServicoDto.tipoServicoId,
-          funcionarioId: createServicoDto.funcionarioId,
-          petId: createServicoDto.petId,
+          tipoServico : {
+            connect: { lookupId: createServicoDto.tipoServicolookupId}
+          },
+          funcionario :{
+            connect: { lookupId: createServicoDto.funcionariolookupId}
+          },
+          pet : {
+            connect: { lookupId: createServicoDto.petlookupId}
+          },
           dataAgendamento: createServicoDto.dataAgendamento,
         },
       });
@@ -28,7 +35,7 @@ export class ServicoService {
       return novoServico;
     } catch (error){
       if (error instanceof Prisma.PrismaClientKnownRequestError) {
-        if (error.code === 'P2003') {
+        if (error.code === 'P2025') {
           throw new NotFoundException(`Não é possível cadastrar serviço. Tipo de serviço, funcionário ou pet não encontrado.`);
         }
       }
@@ -51,9 +58,9 @@ export class ServicoService {
     });
   }
 
-  async findOne(id: number) {
+  async findOne(lookupId: string) {
     const servico = await this.prisma.servico.findUnique({
-      where: {id: id},
+      where: {lookupId: lookupId},
       include: {
         tipoServico: true,
         funcionario: {
@@ -66,23 +73,29 @@ export class ServicoService {
     });
 
     if (!servico) {
-      throw new NotFoundException(`Serviço com ID ${id} não encontrado.`);
+      throw new NotFoundException(`Serviço com lookupId ${lookupId} não encontrado.`);
     }
 
     return servico;
   }
 
-  async update(id: number, updateServicoDto: UpdateServicoDto) {
+  async update(lookupId: string, updateServicoDto: UpdateServicoDto) {
     try{
       return await this.prisma.servico.update({
-        where: {id: id},
+        where: {lookupId: lookupId},
         data: {
           status: updateServicoDto.status,
           observacao: updateServicoDto.observacao,
           precoUnitario: updateServicoDto.precoUnitario,
-          tipoServicoId: updateServicoDto.tipoServicoId,
-          funcionarioId: updateServicoDto.funcionarioId,
-          petId: updateServicoDto.petId,
+          tipoServico : {
+            connect: { lookupId: updateServicoDto.tipoServicolookupId}
+          },
+          funcionario : {
+            connect: { lookupId: updateServicoDto.funcionariolookupId}
+          },
+          pet :{
+            connect: { lookupId: updateServicoDto.petlookupId}
+          },
           dataAgendamento: updateServicoDto.dataAgendamento,
         },
         include: {
@@ -98,7 +111,7 @@ export class ServicoService {
     } catch (error) {
       if (error instanceof Prisma.PrismaClientKnownRequestError) {
         if (error.code === 'P2025') {
-          throw new NotFoundException(`Serviço com ID ${id} não encontrado para atualização.`);
+          throw new NotFoundException(`Serviço com lookupId ${lookupId} não encontrado para atualização.`);
         } else if (error.code === 'P2003') {
           throw new NotFoundException(`Não é possível atualizar serviço. Tipo de serviço, funcionário ou pet não encontrado.`);
         }
@@ -107,10 +120,10 @@ export class ServicoService {
     } 
   }
   
-  async finalizar(id: number){
+  async finalizar(lookupId: string){
     try{
       return await this.prisma.servico.update({
-        where: { id: id },
+        where: {lookupId: lookupId },
         data: {
           dataExecucao: new Date(), 
           status: ServicoStatus.CONCLUIDO,     
@@ -128,7 +141,7 @@ export class ServicoService {
     } catch (error) {
       if (error instanceof Prisma.PrismaClientKnownRequestError) {
         if (error.code === 'P2025') {
-          throw new NotFoundException(`Serviço com ID ${id} não encontrado para finalização.`);
+          throw new NotFoundException(`Serviço com lookupId ${lookupId} não encontrado para finalização.`);
         }
       }
       throw error;
@@ -136,15 +149,15 @@ export class ServicoService {
   }
 
 
-  async remove(id: number) {
+  async remove(lookupId: string) {
     try{
       return await this.prisma.servico.delete({
-        where: {id: id},
+        where: {lookupId: lookupId},
       });
     } catch (error) {
       if (error instanceof Prisma.PrismaClientKnownRequestError) {
         if (error.code === 'P2025') {
-          throw new NotFoundException(`Serviço com ID ${id} não encontrado.`);
+          throw new NotFoundException(`Serviço com lookupId ${lookupId} não encontrado.`);
         }
       }
       throw error; 

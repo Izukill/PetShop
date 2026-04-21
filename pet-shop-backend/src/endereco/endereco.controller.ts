@@ -31,21 +31,21 @@ export class EnderecoController {
     return this.enderecoService.findAll();
   }
 
-  @Get(':id')
+  @Get(':lookupId')
   @ApiDocBuscarEnderecoPorId()
-  findOne(@Param('id') id: string) {
-    return this.enderecoService.findOne(+id);
+  findOne(@Param('lookupId') lookupId: string) {
+    return this.enderecoService.findOne(lookupId);
   }
 
-  @Patch(':id')
+  @Patch(':lookupId')
   @ApiDocAtualizarEndereco()
-  update(@Param('id') id: string, @Body() updateEnderecoDto: UpdateEnderecoDto) {
-    return this.enderecoService.update(+id, updateEnderecoDto);
+  update(@Param('lookupId') lookupId: string, @Body() updateEnderecoDto: UpdateEnderecoDto) {
+    return this.enderecoService.update(lookupId, updateEnderecoDto);
   }
 
-  @Delete(':id')
+  @Delete(':lookupId')
   @ApiDocRemoverEndereco()
-  remove(@Param('id') id: string) {
-    return this.enderecoService.remove(+id);
+  remove(@Param('lookupId') lookupId: string) {
+    return this.enderecoService.remove(lookupId);
   }
 }

@@ -9,7 +9,7 @@ export function ApiDocCriarServico() {
       description: 'Cria uma "Ordem de Serviço" vinculando um Pet, um Cliente e o Tipo de Serviço escolhido (ex: Banho). Geralmente entra com status PENDENTE ou EM ANDAMENTO.' 
     }),
     ApiResponse({ status: 201, description: 'Serviço registrado com sucesso.' }),
-    ApiResponse({ status: 400, description: 'Dados incompletos (ex: faltou o ID do Pet ou do Tipo de Serviço).' }),
+    ApiResponse({ status: 400, description: 'Dados incompletos (ex: faltou o lookupId do Pet ou do Tipo de Serviço).' }),
     ApiResponse({ status: 404, description: 'Pet, Cliente ou Tipo de Serviço não encontrados.' })
   );
 }
@@ -27,7 +27,7 @@ export function ApiDocListarServicos() {
 export function ApiDocBuscarServicoPorId() {
   return applyDecorators(
     ApiOperation({ summary: 'Busca os detalhes de uma ordem de serviço' }),
-    ApiParam({ name: 'id', description: 'ID numérico do serviço (Ordem de Serviço)', example: 42 }),
+    ApiParam({ name: 'lookupId', description: 'lookupId string do serviço (Ordem de Serviço)', example: '4e5fdg@$3gfd' }),
     ApiResponse({ status: 200, description: 'Detalhes do serviço retornados com sucesso.' }),
     ApiResponse({ status: 404, description: 'Ordem de Serviço não encontrada.' })
   );
@@ -39,7 +39,7 @@ export function ApiDocAtualizarServico() {
       summary: 'Edita informações de uma ordem de serviço',
       description: 'Permite adicionar observações extras ou corrigir alguma informação antes do serviço ser finalizado.'
     }),
-    ApiParam({ name: 'id', description: 'ID numérico do serviço a ser editado', example: 42 }),
+    ApiParam({ name: 'lookupId', description: 'lookupId string do serviço a ser editado', example: '4e5fdg@$3gfd' }),
     ApiResponse({ status: 200, description: 'Ordem de serviço atualizada com sucesso.' }),
     ApiResponse({ status: 404, description: 'Ordem de serviço não encontrada.' })
   );
@@ -51,7 +51,7 @@ export function ApiDocRemoverServico() {
       summary: 'Cancela/Exclui uma ordem de serviço',
       description: 'Remove o serviço da fila. Atenção: se o serviço já estiver vinculado a uma Venda Concluída, a exclusão pode ser bloqueada por regra de negócio.'
     }),
-    ApiParam({ name: 'id', description: 'ID numérico do serviço a ser removido', example: 42 }),
+    ApiParam({ name: 'lookupId', description: 'lookupId string do serviço a ser removido', example: '4e5fdg@$3gfd' }),
     ApiResponse({ status: 200, description: 'Ordem de serviço cancelada/removida com sucesso.' }),
     ApiResponse({ status: 404, description: 'Ordem de serviço não encontrada.' })
   );
@@ -63,7 +63,7 @@ export function ApiDocFinalizarServico() {
       summary: 'Marca o serviço como CONCLUÍDO',
       description: 'Ação rápida para o funcionário apertar um botão e informar que o serviço foi finalizado.'
     }),
-    ApiParam({ name: 'id', description: 'ID numérico do serviço recém-terminado', example: 42 }),
+    ApiParam({ name: 'lookupId', description: 'lookupId string do serviço recém-terminado', example: '4e5fdg@$3gfd' }),
     ApiResponse({ status: 200, description: 'Status do serviço alterado para CONCLUÍDO.' }),
     ApiResponse({ status: 400, description: 'O serviço já estava finalizado ou cancelado.' }),
     ApiResponse({ status: 404, description: 'Ordem de serviço não encontrada.' })

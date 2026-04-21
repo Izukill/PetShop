@@ -25,7 +25,7 @@ export function ApiDocListarProdutos() {
 export function ApiDocBuscarProdutoPorId() {
   return applyDecorators(
     ApiOperation({ summary: 'Busca os detalhes de um produto específico' }),
-    ApiParam({ name: 'id', description: 'Código identificador (ID) do produto', example: 101 }),
+    ApiParam({ name: 'lookupId', description: 'Código identificador (lookupId) do produto', example: 101 }),
     ApiResponse({ status: 200, description: 'Produto encontrado com sucesso.' }),
     ApiResponse({ status: 404, description: 'Produto não encontrado no banco de dados.' })
   );
@@ -37,7 +37,7 @@ export function ApiDocAtualizarProduto() {
       summary: 'Atualiza dados ou estoque de um produto',
       description: 'Permite alterar informações do produto, como reajustar o preço de venda, corrigir o nome ou fazer um **ajuste manual de estoque** (entrada de mercadoria).'
     }),
-    ApiParam({ name: 'id', description: 'Código identificador (ID) do produto a ser editado', example: 101 }),
+    ApiParam({ name: 'lookupId', description: 'Código identificador (lookupId) do produto a ser editado', example: 101 }),
     ApiResponse({ status: 200, description: 'Produto atualizado com sucesso.' }),
     ApiResponse({ status: 404, description: 'Produto não encontrado para atualização.' })
   );
@@ -49,7 +49,7 @@ export function ApiDocRemoverProduto() {
       summary: 'Remove um produto do catálogo',
       description: 'Exclui um produto do sistema. Atenção: se o produto já estiver vinculado a uma Venda no histórico, o produto será desativo para manter a integridade fiscal.'
     }),
-    ApiParam({ name: 'id', description: 'Código identificador (ID) do produto a ser removido', example: 101 }),
+    ApiParam({ name: 'lookupId', description: 'Código identificador (lookupId) do produto a ser removido', example: 101 }),
     ApiResponse({ status: 200, description: 'Produto removido com sucesso.' }),
     ApiResponse({ status: 404, description: 'Produto não encontrado para exclusão.' })
   );

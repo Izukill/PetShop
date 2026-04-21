@@ -26,7 +26,7 @@ export function ApiDocListarEnderecos() {
 export function ApiDocBuscarEnderecoPorId() {
   return applyDecorators(
     ApiOperation({ summary: 'Busca os detalhes de um endereço específico' }),
-    ApiParam({ name: 'id', description: 'Código identificador (ID) do endereço', example: 12 }),
+    ApiParam({ name: 'lookupId', description: 'Código identificador (lookupId) do endereço', example: 12 }),
     ApiResponse({ status: 200, description: 'Dados do endereço encontrados com sucesso.' }),
     ApiResponse({ status: 404, description: 'Endereço não encontrado no sistema.' })
   );
@@ -38,7 +38,7 @@ export function ApiDocAtualizarEndereco() {
       summary: 'Atualiza um endereço existente',
       description: 'Permite corrigir informações de localização, como atualizar o número da casa, trocar o complemento ou corrigir o CEP.'
     }),
-    ApiParam({ name: 'id', description: 'Código identificador (ID) do endereço a ser atualizado', example: 12 }),
+    ApiParam({ name: 'lookupId', description: 'Código identificador (lookupId) do endereço a ser atualizado', example: 12 }),
     ApiResponse({ status: 200, description: 'Endereço atualizado com sucesso.' }),
     ApiResponse({ status: 404, description: 'Endereço não encontrado para atualização.' })
   );
@@ -50,7 +50,7 @@ export function ApiDocRemoverEndereco() {
       summary: 'Remove um endereço',
       description: 'Exclui o registro de endereço do banco de dados.'
     }),
-    ApiParam({ name: 'id', description: 'Código identificador (ID) do endereço a ser removido', example: 12 }),
+    ApiParam({ name: 'lookupId', description: 'Código identificador (lookupId) do endereço a ser removido', example: 12 }),
     ApiResponse({ status: 200, description: 'Endereço removido com sucesso.' }),
     ApiResponse({ status: 404, description: 'Endereço não encontrado para exclusão.' })
   );

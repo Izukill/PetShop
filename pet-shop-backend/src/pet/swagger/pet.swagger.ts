@@ -26,7 +26,7 @@ export function ApiDocListarPets() {
 export function ApiDocBuscarPetPorId() {
   return applyDecorators(
     ApiOperation({ summary: 'Busca o prontuário de um Pet específico' }),
-    ApiParam({ name: 'id', description: 'Código identificador (ID) do Pet', example: 7 }),
+    ApiParam({ name: 'lookupId', description: 'Código identificador (lookupId) do Pet', example: 7 }),
     ApiResponse({ status: 200, description: 'Dados do Pet retornados com sucesso.' }),
     ApiResponse({ status: 404, description: 'Pet não encontrado no sistema.' })
   );
@@ -38,7 +38,7 @@ export function ApiDocAtualizarPet() {
       summary: 'Atualiza os dados de um Pet',
       description: 'Permite corrigir informações do animal, como atualizar o peso, alterar a idade ou adicionar alguma observação médica (alergias, etc).'
     }),
-    ApiParam({ name: 'id', description: 'Código identificador (ID) do Pet a ser atualizado', example: 7 }),
+    ApiParam({ name: 'lookupId', description: 'Código identificador (lookupId) do Pet a ser atualizado', example: 7 }),
     ApiResponse({ status: 200, description: 'Dados do Pet atualizados com sucesso.' }),
     ApiResponse({ status: 404, description: 'Pet não encontrado para atualização.' })
   );
@@ -50,7 +50,7 @@ export function ApiDocRemoverPet() {
       summary: 'Remove o cadastro de um Pet',
       description: 'Exclui o animal do sistema. Se o Pet já tiver histórico de serviços (banhos/tosas), a exclusão pode ser impedida para preservar o histórico da loja.'
     }),
-    ApiParam({ name: 'id', description: 'Código identificador (ID) do Pet a ser removido', example: 7 }),
+    ApiParam({ name: 'lookupId', description: 'Código identificador (lookupId) do Pet a ser removido', example: 7 }),
     ApiResponse({ status: 200, description: 'Cadastro do Pet removido com sucesso.' }),
     ApiResponse({ status: 404, description: 'Pet não encontrado para exclusão.' })
   );

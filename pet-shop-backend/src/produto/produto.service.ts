@@ -28,22 +28,22 @@ export class ProdutoService {
     return await this.prisma.produto.findMany();
   }
 
-  async findOne(id: number) {
+  async findOne(lookupId: string) {
     const produto = await this.prisma.produto.findUnique({
-      where: {id: id},
+      where: {lookupId: lookupId},
     });
 
     if(!produto){
-      throw new NotFoundException(`Produto com ID ${id} não encontrado.`);
+      throw new NotFoundException(`Produto com lookupId ${lookupId} não encontrado.`);
     }
 
     return produto;
   }
 
-  async update(id: number, updateProdutoDto: UpdateProdutoDto) {
+  async update(lookupId: string, updateProdutoDto: UpdateProdutoDto) {
     try{
       return await this.prisma.produto.update({
-        where: {id: id},
+        where: {lookupId: lookupId},
         data: {
           nome: updateProdutoDto.nome,
           categoria: updateProdutoDto.categoria,
@@ -54,16 +54,16 @@ export class ProdutoService {
     } catch (error) {
       if(error instanceof Prisma.PrismaClientKnownRequestError) {
         if (error.code === 'P2025') {
-          throw new NotFoundException(`Produto com ID ${id} não encontrado.`);
+          throw new NotFoundException(`Produto com lookupId ${lookupId} não encontrado.`);
         }
       }
     }
   }
 
-  async remove(id: number) {
+  async remove(lookupId: string) {
     try{
       return await this.prisma.produto.update({
-        where: {id: id},
+        where: {lookupId: lookupId},
         data: {
           ativo: false,
         }
@@ -71,7 +71,7 @@ export class ProdutoService {
     } catch (error) {
       if(error instanceof Prisma.PrismaClientKnownRequestError) {
         if (error.code === 'P2025') {
-          throw new NotFoundException(`Produto com ID ${id} não encontrado.`);
+          throw new NotFoundException(`Produto com lookupId ${lookupId} não encontrado.`);
         }
       }
     }

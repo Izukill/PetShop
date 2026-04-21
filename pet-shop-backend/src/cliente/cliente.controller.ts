@@ -31,21 +31,21 @@ export class ClienteController {
     return this.clienteService.findAll();
   }
 
-  @Get(':id')
+  @Get(':lookupId')
   @ApiDocBuscarClientePorId()
-  findOne(@Param('id') id: string) {
-    return this.clienteService.findOne(+id);
+  findOne(@Param('lookupId') lookupId: string) {
+    return this.clienteService.findOne(lookupId);
   }
 
-  @Patch(':id')
+  @Patch(':lookupId')
   @ApiDocAtualizarCliente()
-  update(@Param('id') id: string, @Body() updateClienteDto: UpdateClienteDto) {
-    return this.clienteService.update(+id, updateClienteDto);
+  update(@Param('lookupId') lookupId: string, @Body() updateClienteDto: UpdateClienteDto) {
+    return this.clienteService.update(lookupId, updateClienteDto);
   }
 
-  @Delete(':id')
+  @Delete(':lookupId')
   @ApiDocRemoverCliente()
-  remove(@Param('id') id: string) {
-    return this.clienteService.remove(+id);
+  remove(@Param('lookupId') lookupId: string) {
+    return this.clienteService.remove(lookupId);
   }
 }
