@@ -4,6 +4,7 @@ import { FontAwesome5, MaterialIcons } from '@expo/vector-icons';
 import { router, useFocusEffect } from 'expo-router'; 
 import { api } from '@/services/api';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import ModalDeletar from '@/components/layout/modalDeletar';
 
 interface Pessoa {
   nome: string;
@@ -22,6 +23,34 @@ export default function ListaClientes() {
   const [clientes, setClientes] = useState<Cliente[]>([]);
   const [busca, setBusca] = useState('');
   const [loading, setLoading] = useState(true);
+
+  const [itemParaDeletar, setItemParaDeletar] = useState<Cliente | null>(null);
+  const [modalVisible, setModalVisible] = useState(false);
+
+  const abrirModalDelecao = (lookupId: string, nome: string) => {
+    setItemParaDeletar({ lookupId, pessoa: { nome, email: '', ativo: false }, numero: '', id: 0 });
+    setModalVisible(true);
+  };
+
+  const confirmarDelecao = async () => {
+    if (!itemParaDeletar) return;
+
+    try {
+      setModalVisible(false); 
+      const token = await AsyncStorage.getItem('@PetShop:token');
+      
+      await api.delete(`/cliente/${itemParaDeletar.lookupId}`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      
+      Alert.alert('Sucesso', 'Cliente removido!');
+      carregarClientes(); 
+    } catch (error) {
+      Alert.alert('Erro', 'Não foi possível excluir o cliente.');
+    } finally {
+      setItemParaDeletar(null); 
+    }
+  };
 
   useFocusEffect(
     useCallback(() => {
@@ -128,6 +157,12 @@ export default function ListaClientes() {
 
           <TouchableOpacity 
             style={[styles.botaoAcao, { backgroundColor: '#E1F5FE' }]}
+            onPress={() => {
+              router.push({
+                pathname: `/cadastros/clientes/editar/${item.lookupId}`,
+                params: { clienteId: item.lookupId } 
+              } as any); 
+            }}
           >
             <FontAwesome5 name="edit" size={16} color="#03A9F4" />
           </TouchableOpacity>
@@ -149,7 +184,7 @@ export default function ListaClientes() {
         <TouchableOpacity onPress={() => router.back()} style={styles.botaoVoltar}>
           <FontAwesome5 name="arrow-left" size={20} color="#2D3436" />
         </TouchableOpacity>
-        <Text style={styles.titulo}>Clientes</Text>
+        <Text style={styles.titulo}><FontAwesome5 name="user-friends" size={25} color="#03A9F4" /> Clientes</Text>
         <View style={{ width: 40 }} />
       </View>
 
@@ -183,6 +218,13 @@ export default function ListaClientes() {
       >
         <FontAwesome5 name="plus" size={24} color="#FFF" />
       </TouchableOpacity>
+
+      <ModalDeletar
+        visible={modalVisible}
+        nomeItem={itemParaDeletar?.pessoa.nome}
+        onCancel={() => setModalVisible(false)}
+        onConfirm={confirmarDelecao}
+      />
 
     </View>
   );
