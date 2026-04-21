@@ -189,23 +189,134 @@ export default function ListaClientes() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#F5F7FA' },
-  header: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', padding: 20, paddingTop: 60, backgroundColor: '#FFF' },
-  botaoVoltar: { padding: 10, backgroundColor: '#F5F7FA', borderRadius: 12 },
-  titulo: { fontSize: 22, fontWeight: 'bold', color: '#2D3436' },
-  buscaContainer: { flexDirection: 'row', alignItems: 'center', backgroundColor: '#FFF', margin: 20, paddingHorizontal: 15, borderRadius: 12, borderWidth: 1, borderColor: '#DFE6E9', height: 50 },
-  buscaIcone: { marginRight: 10 },
-  buscaInput: { flex: 1, fontSize: 16, color: '#2D3436' },
-  listaConfig: { paddingHorizontal: 20, paddingBottom: 100 },
-  card: { backgroundColor: '#FFF', padding: 15, borderRadius: 15, marginBottom: 15, shadowColor: '#000', shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.05, shadowRadius: 5, elevation: 2 },
-  cardInfo: { marginBottom: 15 },
-  cardHeader: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 },
-  nomeCliente: { fontSize: 18, fontWeight: 'bold', color: '#2D3436', flex: 1, marginRight: 10 },
-  badge: { paddingHorizontal: 8, paddingVertical: 4, borderRadius: 12 },
-  badgeTexto: { fontSize: 12, fontWeight: 'bold', textTransform: 'uppercase' },
-  detalheCliente: { fontSize: 14, color: '#636E72', marginBottom: 2 },
-  cardAcoes: { flexDirection: 'row', justifyContent: 'flex-end', gap: 10, borderTopWidth: 1, borderTopColor: '#F5F7FA', paddingTop: 10 },
-  botaoAcao: { width: 40, height: 40, borderRadius: 20, justifyContent: 'center', alignItems: 'center' },
-  textoVazio: { textAlign: 'center', color: '#B2BEC3', marginTop: 50, fontSize: 16 },
-  fab: { position: 'absolute', bottom: 30, right: 30, width: 60, height: 60, backgroundColor: '#4D7BF0', borderRadius: 30, justifyContent: 'center', alignItems: 'center', shadowColor: '#4D7BF0', shadowOffset: { width: 0, height: 4 }, shadowOpacity: 0.4, shadowRadius: 5, elevation: 6 }
-});
+    container: { 
+      flex: 1, 
+      backgroundColor: '#F5F7FA',
+    },
+    header: { 
+      flexDirection: 'row', 
+      justifyContent: 'space-between', 
+      alignItems: 'center', 
+      padding: 20, 
+      paddingTop: 60, 
+      backgroundColor: '#FFF',
+    },
+    botaoVoltar: { 
+      padding: 10, 
+      backgroundColor: '#F5F7FA', 
+      borderRadius: 12,
+    },
+    titulo: { 
+      fontSize: 22, 
+      fontWeight: 'bold', 
+      color: '#2D3436',
+    },
+    buscaContainer: { 
+      flexDirection: 'row', 
+      alignItems: 'center', 
+      backgroundColor: '#FFF', 
+      margin: 20, 
+      paddingHorizontal: 15, 
+      borderRadius: 12, 
+      borderWidth: 1, 
+      borderColor: '#DFE6E9', 
+      height: 50,
+    },
+    buscaIcone: { 
+      marginRight: 10,
+    },
+    buscaInput: { 
+      flex: 1, 
+      fontSize: 16, 
+      color: '#2D3436',
+    },
+    listaConfig: { 
+      paddingHorizontal: 20, 
+      paddingBottom: 100,
+    },
+    card: { 
+      backgroundColor: '#FFF', 
+      padding: 15, 
+      borderRadius: 15, 
+      marginBottom: 15, 
+      shadowColor: '#000', 
+      shadowOffset: { 
+        width: 0, 
+        height: 2 
+      }, 
+      shadowOpacity: 0.05, 
+      shadowRadius: 5, 
+      elevation: 2,
+    },
+    cardInfo: { 
+      marginBottom: 15,
+    },
+    cardHeader: { 
+      flexDirection: 'row', 
+      justifyContent: 'space-between', 
+      alignItems: 'center', 
+      marginBottom: 8,
+    },
+    nomeCliente: { 
+      fontSize: 18, 
+      fontWeight: 'bold', 
+      color: '#2D3436', 
+      flex: 1, 
+      marginRight: 10,
+    },
+    badge: { 
+      paddingHorizontal: 8, 
+      paddingVertical: 4, 
+      borderRadius: 12,
+    },
+    badgeTexto: { 
+      fontSize: 12, 
+      fontWeight: 'bold', 
+      textTransform: 'uppercase',
+    },
+    detalheCliente: { 
+      fontSize: 14, 
+      color: '#636E72', 
+      marginBottom: 2,
+    },
+    cardAcoes: { 
+      flexDirection: 'row', 
+      justifyContent: 'flex-end', 
+      gap: 10, 
+      borderTopWidth: 1, 
+      borderTopColor: '#F5F7FA', 
+      paddingTop: 10,
+    },
+    botaoAcao: { 
+      width: 40, 
+      height: 40, 
+      borderRadius: 20, 
+      justifyContent: 'center', 
+      alignItems: 'center',
+    },
+    textoVazio: { 
+      textAlign: 'center', 
+      color: '#B2BEC3', 
+      marginTop: 50, 
+      fontSize: 16,
+    },
+    fab: { 
+      position: 'absolute', 
+      bottom: 30, 
+      right: 30, 
+      width: 60, 
+      height: 60, 
+      backgroundColor: '#4D7BF0', 
+      borderRadius: 30, 
+      justifyContent: 'center', 
+      alignItems: 'center', 
+      shadowColor: '#4D7BF0', 
+      shadowOffset: { 
+        width: 0, 
+        height: 4 
+      }, 
+      shadowOpacity: 0.4, 
+      shadowRadius: 5, 
+      elevation: 6,
+    }
+  });
