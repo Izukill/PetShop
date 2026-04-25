@@ -65,7 +65,7 @@ export default function ListaClientes() {
       const response = await api.get("/cliente", {
         headers: { Authorization: `Bearer ${token}` }
       });
-      setClientes(response.data);
+      setClientes(response.data as Cliente[]);
     } catch (error) {
       Alert.alert('Erro', 'Não foi possível carregar os clientes.');
     } finally {

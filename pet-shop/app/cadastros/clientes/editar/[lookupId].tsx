@@ -5,6 +5,18 @@ import { router, useLocalSearchParams } from 'expo-router';
 import { api } from '@/services/api';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
+interface Pessoa {
+  nome: string;
+  email: string;
+  ativo: boolean; 
+}
+
+interface Cliente {
+  lookupId: string; 
+  pessoa: Pessoa;
+  numero: string;
+}
+
 export default function EditarCliente() {
   // 2. Pegamos o lookupId que foi passado pela URL!
   const { lookupId } = useLocalSearchParams<{ lookupId: string }>();
@@ -26,7 +38,7 @@ export default function EditarCliente() {
         headers: { Authorization: `Bearer ${token}` }
       });
       
-      const cliente = response.data;
+      const cliente = response.data as Cliente;
       
       setNome(cliente.pessoa.nome);
       setEmail(cliente.pessoa.email);
