@@ -5,6 +5,7 @@ import { router, useFocusEffect } from 'expo-router';
 import { api } from '@/services/api';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import ModalDeletar from '@/components/layout/modalDeletar';
+import ModalReativar from '@/components/layout/modalReativar'; 
 
 interface Pessoa {
   nome: string;
@@ -27,6 +28,9 @@ export default function ListaClientes() {
   const [itemParaDeletar, setItemParaDeletar] = useState<Cliente | null>(null);
   const [modalVisible, setModalVisible] = useState(false);
 
+  const [itemParaReativar, setItemParaReativar] = useState<Cliente | null>(null);
+  const [modalReativarVisible, setModalReativarVisible] = useState(false);
+
   const abrirModalDelecao = (lookupId: string, nome: string) => {
     setItemParaDeletar({ lookupId, pessoa: { nome, email: '', ativo: false }, numero: '', id: 0 });
     setModalVisible(true);
@@ -34,7 +38,6 @@ export default function ListaClientes() {
 
   const confirmarDelecao = async () => {
     if (!itemParaDeletar) return;
-
     try {
       setModalVisible(false); 
       const token = await AsyncStorage.getItem('@PetShop:token');
@@ -45,10 +48,33 @@ export default function ListaClientes() {
       
       Alert.alert('Sucesso', 'Cliente removido!');
       carregarClientes(); 
-    } catch (error) {
+    } catch {
       Alert.alert('Erro', 'Não foi possível excluir o cliente.');
     } finally {
       setItemParaDeletar(null); 
+    }
+  };
+
+  const abrirModalReativacao = (lookupId: string, nome: string) => {
+    setItemParaReativar({ lookupId, pessoa: { nome, email: '', ativo: true }, numero: '', id: 0 });
+    setModalReativarVisible(true);
+  };
+
+  const confirmarReativacao = async () => {
+    if (!itemParaReativar) return;
+    try {
+      setModalReativarVisible(false);
+      const token = await AsyncStorage.getItem('@PetShop:token');
+
+      await api.patch(`/cliente/${itemParaReativar.lookupId}/reativar`, {}, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      Alert.alert('Sucesso', 'Cliente reativado com sucesso!');
+      carregarClientes(); 
+    } catch {
+      Alert.alert('Erro', 'Não foi possível reativar o cliente.');
+    } finally {
+      setItemParaReativar(null);
     }
   };
 
@@ -66,37 +92,11 @@ export default function ListaClientes() {
         headers: { Authorization: `Bearer ${token}` }
       });
       setClientes(response.data as Cliente[]);
-    } catch (error) {
+    } catch{
       Alert.alert('Erro', 'Não foi possível carregar os clientes.');
     } finally {
       setLoading(false);
     }
-  };
-
-  const deletarCliente = (lookupId: string, nome: string) => {
-    Alert.alert(
-      "Atenção",
-      `Tem certeza que deseja excluir o cliente ${nome}?`,
-      [
-        { text: "Cancelar", style: "cancel" },
-        { 
-          text: "Excluir", 
-          style: "destructive",
-          onPress: async () => {
-            try {
-              const token = await AsyncStorage.getItem('@PetShop:token');
-              await api.delete(`/cliente/${lookupId}`, {
-                headers: { Authorization: `Bearer ${token}` }
-              });
-              Alert.alert('Sucesso', 'Cliente removido!');
-              carregarClientes();
-            } catch (error) {
-              Alert.alert('Erro', 'Não foi possível excluir o cliente.');
-            }
-          }
-        }
-      ]
-    );
   };
 
   const clientesProcessados = clientes
@@ -110,11 +110,9 @@ export default function ListaClientes() {
         emailSeguro.toLowerCase().includes(buscaSegura.toLowerCase())
       );
     })
-    //sort para colocar os clientes ativos no topo da lista
     .sort((a, b) => {
       const aStatus = a.pessoa?.ativo ? 1 : 0;
       const bStatus = b.pessoa?.ativo ? 1 : 0;
-      
       return bStatus - aStatus; 
     });
 
@@ -167,12 +165,23 @@ export default function ListaClientes() {
             <FontAwesome5 name="edit" size={16} color="#03A9F4" />
           </TouchableOpacity>
 
-          <TouchableOpacity 
-            style={[styles.botaoAcao, { backgroundColor: '#FFEBEE' }]}
-            onPress={() => deletarCliente(item.lookupId, item.pessoa.nome)}
-          >
-            <FontAwesome5 name="trash-alt" size={16} color="#E53935" />
-          </TouchableOpacity>
+          {/* lógica dos botões de ativar/desativar */}
+          {isAtivo ? (
+            <TouchableOpacity 
+              style={[styles.botaoAcao, { backgroundColor: '#FFEBEE' }]}
+              onPress={() => abrirModalDelecao(item.lookupId, item.pessoa.nome)}
+            >
+              <FontAwesome5 name="trash-alt" size={16} color="#E53935" />
+            </TouchableOpacity>
+          ) : (
+            <TouchableOpacity 
+              style={[styles.botaoAcao, { backgroundColor: '#E8F5E9' }]}
+              onPress={() => abrirModalReativacao(item.lookupId, item.pessoa.nome)}
+            >
+              <FontAwesome5 name="undo-alt" size={16} color="#4CAF50" />
+            </TouchableOpacity>
+          )}
+          
         </View>
       </View>
     );
@@ -181,7 +190,7 @@ export default function ListaClientes() {
   return (
     <View style={styles.container}>
       <View style={styles.header}>
-        <TouchableOpacity onPress={() => router.back()} style={styles.botaoVoltar}>
+        <TouchableOpacity onPress={() => router.push('/cadastros')} style={styles.botaoVoltar}>
           <FontAwesome5 name="arrow-left" size={20} color="#2D3436" />
         </TouchableOpacity>
         <Text style={styles.titulo}><FontAwesome5 name="user-friends" size={25} color="#03A9F4" /> Clientes</Text>
@@ -224,6 +233,13 @@ export default function ListaClientes() {
         nomeItem={itemParaDeletar?.pessoa.nome}
         onCancel={() => setModalVisible(false)}
         onConfirm={confirmarDelecao}
+      />
+
+      <ModalReativar
+        visible={modalReativarVisible}
+        nomeItem={itemParaReativar?.pessoa.nome}
+        onCancel={() => setModalReativarVisible(false)}
+        onConfirm={confirmarReativacao}
       />
 
     </View>
