@@ -1,20 +1,12 @@
 import React, { useState, useCallback } from "react";
-import {
-  View,
-  Text,
-  StyleSheet,
-  TextInput,
-  TouchableOpacity,
-  FlatList,
-  ActivityIndicator,
-  Alert,
-} from "react-native";
+import { View, Text, StyleSheet, TextInput, TouchableOpacity, FlatList, ActivityIndicator, Alert } from "react-native";
 import { FontAwesome5 } from "@expo/vector-icons";
 import { router, useFocusEffect, useLocalSearchParams } from "expo-router";
 import { api } from "@/services/api";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import ModalDeletar from "@/components/layout/modalDeletar";
 import ModalReativar from "@/components/layout/modalReativar";
+import PetCard from "@/components/pets/petCard";
 
 import { Pet } from "@/data/pets";
 
@@ -25,16 +17,10 @@ export default function ListaPets() {
 
   const { clienteId } = useLocalSearchParams<{ clienteId: string }>();
 
-  const [itemParaDeletar, setItemParaDeletar] = useState<{
-    lookupId: string;
-    nome: string;
-  } | null>(null);
+  const [itemParaDeletar, setItemParaDeletar] = useState<{ lookupId: string; nome: string; } | null>(null);
   const [modalVisible, setModalVisible] = useState(false);
 
-  const [itemParaReativar, setItemParaReativar] = useState<{
-    lookupId: string;
-    nome: string;
-  } | null>(null);
+  const [itemParaReativar, setItemParaReativar] = useState<{ lookupId: string; nome: string; } | null>(null);
   const [modalReativarVisible, setModalReativarVisible] = useState(false);
 
   useFocusEffect(
@@ -83,9 +69,7 @@ export default function ListaPets() {
       await api.patch(
         `/pet/${itemParaReativar.lookupId}/reativar`,
         {},
-        {
-          headers: { Authorization: `Bearer ${token}` },
-        },
+        { headers: { Authorization: `Bearer ${token}` } }
       );
       Alert.alert("Sucesso", "Pet reativado!");
       carregarPets();
@@ -98,10 +82,7 @@ export default function ListaPets() {
 
   const petsProcessados = pets
     .filter(pet => {
-      //se clienteId filtra por ele
-      if (clienteId && pet.clienteLookupId !== clienteId) {
-        return false;
-      }
+      if (clienteId && pet.clienteLookupId !== clienteId) return false;
 
       const nomeSeguro = pet.nome || '';
       const racaSegura = pet.raca || '';
@@ -120,77 +101,29 @@ export default function ListaPets() {
       return bStatus - aStatus; 
     });
 
-  const renderItem = ({ item }: { item: Pet }) => {
-    const isAtivo = item.ativo;
-    const corBadgeFundo = isAtivo ? "#FFF0F5" : "#FFEBEE";
-    const corBadgeTexto = isAtivo ? "#FF7675" : "#E53935";
-
-    return (
-      <View style={[styles.card, !isAtivo && { opacity: 0.7 }]}>
-        <View style={styles.cardInfo}>
-          <View style={styles.cardHeader}>
-            <Text style={styles.nomePet} numberOfLines={1}>
-              {item.nome}
-            </Text>
-            <View style={[styles.badge, { backgroundColor: corBadgeFundo }]}>
-              <Text style={[styles.badgeTexto, { color: corBadgeTexto }]}>
-                {isAtivo ? "Ativo" : "Inativo"}
-              </Text>
-            </View>
-          </View>
-
-          <Text style={styles.detalhePet}>
-            <FontAwesome5 name="bone" size={12} color="#B2BEC3" /> Raça:{" "}
-            {item.raca} | Peso: {item.peso}kg
-          </Text>
-          {/* Graças ao JOIN que fizemos, podemos mostrar o nome do dono aqui: */}
-          <Text style={styles.detalhePet}>
-            <FontAwesome5 name="user" size={12} color="#B2BEC3" /> Dono:{" "}
-            {item.cliente?.pessoa?.nome || "Sem dono vinculado"}
-          </Text>
-        </View>
-
-        <View style={styles.cardAcoes}>
-          <TouchableOpacity
-            style={[styles.botaoAcao, { backgroundColor: "#E1F5FE" }]}
-            onPress={() =>
-              router.push(`/cadastros/pets/editar/${item.lookupId}` as any)
-            }
-          >
-            <FontAwesome5 name="edit" size={16} color="#03A9F4" />
-          </TouchableOpacity>
-
-          {isAtivo ? (
-            <TouchableOpacity
-              style={[styles.botaoAcao, { backgroundColor: "#FFEBEE" }]}
-              onPress={() => {
-                setItemParaDeletar({
-                  lookupId: item.lookupId,
-                  nome: item.nome,
-                });
-                setModalVisible(true);
-              }}
-            >
-              <FontAwesome5 name="trash-alt" size={16} color="#E53935" />
-            </TouchableOpacity>
-          ) : (
-            <TouchableOpacity
-              style={[styles.botaoAcao, { backgroundColor: "#E8F5E9" }]}
-              onPress={() => {
-                setItemParaReativar({
-                  lookupId: item.lookupId,
-                  nome: item.nome,
-                });
-                setModalReativarVisible(true);
-              }}
-            >
-              <FontAwesome5 name="undo-alt" size={16} color="#4CAF50" />
-            </TouchableOpacity>
-          )}
-        </View>
-      </View>
-    );
-  };
+  const renderItem = ({ item }: { item: Pet }) => (
+    <PetCard 
+      item={item}
+      onEdit={() => router.push(`/cadastros/pets/editar/${item.lookupId}` as any)}
+      onDelete={() => {
+        setItemParaDeletar({ lookupId: item.lookupId, nome: item.nome });
+        setModalVisible(true);
+      }}
+      onReactivate={() => {
+        setItemParaReativar({ lookupId: item.lookupId, nome: item.nome });
+        setModalReativarVisible(true);
+      }}
+      onViewOwner={() => {
+        router.push({
+          pathname: '/cadastros/clientes',
+          params: { 
+            clienteId: item.clienteLookupId, 
+            clienteNome: item.cliente?.pessoa?.nome 
+          }
+        });
+      }}
+    />
+  );
 
   return (
     <View style={styles.container}>
@@ -208,12 +141,7 @@ export default function ListaPets() {
       </View>
 
       <View style={styles.buscaContainer}>
-        <FontAwesome5
-          name="search"
-          size={18}
-          color="#B2BEC3"
-          style={styles.buscaIcone}
-        />
+        <FontAwesome5 name="search" size={18} color="#B2BEC3" style={styles.buscaIcone} />
         <TextInput
           style={styles.buscaInput}
           placeholder="Buscar pet, raça ou dono..."
@@ -223,11 +151,7 @@ export default function ListaPets() {
       </View>
 
       {loading ? (
-        <ActivityIndicator
-          size="large"
-          color="#FF7675"
-          style={{ marginTop: 50 }}
-        />
+        <ActivityIndicator size="large" color="#FF7675" style={{ marginTop: 50 }} />
       ) : (
         <FlatList
           data={petsProcessados}
@@ -241,10 +165,7 @@ export default function ListaPets() {
       )}
 
       <TouchableOpacity
-        style={[
-          styles.fab,
-          { backgroundColor: "#FF7675", shadowColor: "#FF7675" },
-        ]}
+        style={[styles.fab, { backgroundColor: "#FF7675", shadowColor: "#FF7675" }]}
         onPress={() => router.push("/cadastros/pets/novo")}
       >
         <FontAwesome5 name="plus" size={24} color="#FFF" />

@@ -20,6 +20,7 @@ import { Cliente } from "@/data/clientes";
 
 export default function NovoPet() {
   const [nome, setNome] = useState("");
+  const [especie, setEspecie] = useState("");
   const [raca, setRaca] = useState("");
   const [peso, setPeso] = useState("");
   const [idade, setIdade] = useState("");
@@ -90,6 +91,7 @@ export default function NovoPet() {
           nome,
           raca,
           peso,
+          especie,
           idade,
           clienteLookupId: clienteSelecionado.lookupId,
         },
@@ -130,7 +132,8 @@ export default function NovoPet() {
         </View>
 
         <View style={styles.form}>
-          {/* DADOS DO PET */}
+
+          {/* dados do pet */}
           <Text style={styles.label}>Nome do Pet</Text>
           <View style={styles.inputContainer}>
             <FontAwesome5
@@ -145,6 +148,23 @@ export default function NovoPet() {
               placeholderTextColor="#B2BEC3"
               value={nome}
               onChangeText={setNome}
+            />
+          </View>
+
+          <Text style={styles.label}>Espécie</Text>
+          <View style={styles.inputContainer}>
+            <FontAwesome5
+              name="cat"
+              size={18}
+              color="#B2BEC3"
+              style={styles.inputIcon}
+            />
+            <TextInput
+              style={styles.inputText}
+              placeholder="Ex: Cachorro"
+              placeholderTextColor="#B2BEC3"
+              value={especie}
+              onChangeText={setEspecie}
             />
           </View>
 
@@ -270,7 +290,7 @@ export default function NovoPet() {
                     {clienteSelecionado.pessoa.nome}
                   </Text>
                 </View>
-                {/* Botão para remover a seleção e buscar outro */}
+                {/* botão para remover a seleção e buscar outro */}
                 <TouchableOpacity onPress={() => setClienteSelecionado(null)}>
                   <FontAwesome5 name="times-circle" size={24} color="#E53935" />
                 </TouchableOpacity>

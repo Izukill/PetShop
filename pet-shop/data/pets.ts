@@ -8,6 +8,7 @@ const PETS_KEY = '@PetShop:pets';
 export interface Pet {
   lookupId: string;
   nome: string;
+  especie?: string;
   raca: string;
   peso: string;
   idade: number;
@@ -32,7 +33,7 @@ export const petData = {
     }));
   },
 
-  async save(dados: { nome: string; raca: string; peso: string; idade: number; clienteLookupId: string }): Promise<Pet> {
+  async save(dados: { nome: string; raca: string; peso: string; idade: number; clienteLookupId: string; especie?: string }): Promise<Pet> {
     const pets = await this.getRaw();
     
     const novoPet: Pet = {
@@ -41,6 +42,7 @@ export const petData = {
       raca: dados.raca,
       peso: dados.peso,
       idade: dados.idade,
+      especie: dados.especie,
       clienteLookupId: dados.clienteLookupId,
       ativo: true,
     };
@@ -55,7 +57,7 @@ export const petData = {
     return pets.find(p => p.lookupId === lookupId);
   },
 
-  async update(lookupId: string, dados: Partial<{ nome: string; raca: string; peso: string; idade: number; clienteLookupId: string }>): Promise<Pet> {
+  async update(lookupId: string, dados: Partial<{ nome: string; raca: string; peso: string; idade: number; clienteLookupId: string; especie?: string }>): Promise<Pet> {
     const pets = await this.getRaw();
     const index = pets.findIndex(p => p.lookupId === lookupId);
 
@@ -68,6 +70,7 @@ export const petData = {
       peso: dados.peso || pets[index].peso,
       idade: dados.idade || pets[index].idade,
       clienteLookupId: dados.clienteLookupId || pets[index].clienteLookupId,
+      especie: dados.especie || pets[index].especie,
     };
 
     await AsyncStorage.setItem(PETS_KEY, JSON.stringify(pets));
