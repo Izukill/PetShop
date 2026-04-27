@@ -1,70 +1,91 @@
 import { clienteData } from '../data/clientes';
-// import { petData } from '../data/petData'; // Descomente quando criar o petData
-// import { funcionarioData } from '../data/funcionarioData'; // Descomente quando criar o funcionarioData
-
+import { petData } from '../data/pets';
 
 
 export const api = {
-  
-
   get: async (rota: string, config?: any) => {
 
-    if (rota === '/cliente') {
-      const clientes = await clienteData.getAll();
-      return { data: clientes };
-    }
-    
+    if (rota === '/cliente') return { data: await clienteData.getAll() };
     if (rota.startsWith('/cliente/')) {
       const id = rota.split('/')[2];
       const cliente = await clienteData.findByLookupId(id);
-      
-      if (!cliente) throw new Error("Cliente não encontrado (404)");
+      if (!cliente) throw new Error("Cliente não encontrado");
       return { data: cliente };
+    }
+
+    if (rota === '/pet') return { data: await petData.getAll() };
+    if (rota.startsWith('/pet/')) {
+      const id = rota.split('/')[2];
+      const pet = await petData.findByLookupId(id);
+      if (!pet) throw new Error("Pet não encontrado");
+      return { data: pet };
     }
 
     return { data: [] };
   },
 
-
   post: async (rota: string, body: any, config?: any) => {
 
-
-    if (rota === '/cliente') {
-      const novoCliente = await clienteData.save(body);
-      return { data: novoCliente };
-    }
-
-    throw new Error("Erro na rota de POST não implementada no Mock");
+    if (rota === '/cliente') return { data: await clienteData.save(body) };
+    if (rota === '/pet') return { data: await petData.save(body) }; 
+    throw new Error("Erro na rota de POST");
   },
-
 
   patch: async (rota: string, body: any, config?: any) => {
 
-    if (rota.includes('/reativar')) {
+  
+    if (rota.includes('/cliente/') && rota.includes('/reativar')) {
+      const id = rota.split('/')[2];
+      await clienteData.reactivate(id);
+      return { data: { sucesso: true } };
+    }
+    if (rota.startsWith('/cliente/')) {
+      const id = rota.split('/')[2];
+      return { data: await clienteData.update(id, body) };
+    }
+
+    if (rota.includes('/pet/') && rota.includes('/reativar')) {
+      const id = rota.split('/')[2];
+      await petData.reactivate(id);
+      return { data: { sucesso: true } };
+    }
+    if (rota.startsWith('/pet/')) {
+      const id = rota.split('/')[2];
+      return { data: await petData.update(id, body) };
+    }
+
+    throw new Error("Erro na rota de PATCH");
+  },
+
+  delete: async (rota: string, config?: any) => {
+
+    if (rota.startsWith('/cliente/')) {
+      const id = rota.split('/')[2];
+      await clienteData.remove(id);
+      return { data: { sucesso: true } };
+    }
+    if (rota.startsWith('/pet/')) {
+      const id = rota.split('/')[2];
+      await petData.remove(id);
+      return { data: { sucesso: true } };
+    }
+    throw new Error("Erro na rota de DELETE");
+  },
+
+  reactivate: async (rota: string, config?: any) => {
+
+    if (rota.startsWith('/cliente/')) {
       const id = rota.split('/')[2];
       await clienteData.reactivate(id);
       return { data: { sucesso: true } };
     }
 
-    if (rota.startsWith('/cliente/')) {
+    if (rota.startsWith('/pet/')) {
       const id = rota.split('/')[2];
-      
-      const clienteAtualizado = await clienteData.update(id, body);
-      return { data: clienteAtualizado };
-    }
-
-    throw new Error("Erro na rota de PATCH implementada no Mock");
-  },
-
-  delete: async (rota: string, config?: any) => {
-    
-    if (rota.startsWith('/cliente/')) {
-      const id = rota.split('/')[2];
-      
-      await clienteData.remove(id);
+      await petData.reactivate(id);
       return { data: { sucesso: true } };
     }
-
-    throw new Error("Erro na rota de DELETE implementada no Mock");
+    throw new Error("Erro na rota de REACTIVATE");
   }
+
 };

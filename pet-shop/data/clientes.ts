@@ -5,6 +5,7 @@ import { v4 as uuidv4 } from 'uuid';
 const CLIENTES_KEY = '@PetShop:clientes';
 
 export interface Cliente {
+  id: number;
   lookupId: string;
   numero: string;
   pessoa: {
@@ -24,6 +25,7 @@ export const clienteData = {
     const clientes = await this.getAll();
     
     const novoCliente: Cliente = {
+      id: clientes.length > 0 ? Math.max(...clientes.map(c => c.id)) + 1 : 1,
       lookupId: uuidv4(),
       numero: dados.numero,
       pessoa: {

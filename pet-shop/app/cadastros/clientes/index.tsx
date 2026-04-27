@@ -7,18 +7,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import ModalDeletar from '@/components/layout/modalDeletar';
 import ModalReativar from '@/components/layout/modalReativar'; 
 
-interface Pessoa {
-  nome: string;
-  email: string;
-  ativo: boolean; 
-}
-
-interface Cliente {
-  id: number;
-  lookupId: string; 
-  pessoa: Pessoa;
-  numero: string;
-}
+import { Cliente } from '@/data/clientes';
 
 export default function ListaClientes() {
   const [clientes, setClientes] = useState<Cliente[]>([]);
@@ -145,7 +134,7 @@ export default function ListaClientes() {
             style={[styles.botaoAcao, { backgroundColor: '#FFF0F5' }]}
             onPress={() => {
               router.push({
-                pathname: '/cadastros/pets/novo',
+                pathname: '/cadastros/pets',
                 params: { clienteId: item.lookupId } 
               } as any); 
             }}
