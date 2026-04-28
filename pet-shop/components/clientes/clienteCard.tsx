@@ -109,7 +109,7 @@ const styles = StyleSheet.create({
   },
   badge: { paddingHorizontal: 8, paddingVertical: 4, borderRadius: 12 },
   badgeTexto: { fontSize: 12, fontWeight: "bold", textTransform: "uppercase" },
-  detalheCliente: { fontSize: 14, color: "#636E72", marginBottom: 2 },
+  detalheCliente: { fontSize: 17, color: "#636E72", marginBottom: 2 },
   cardAcoes: {
     flexDirection: "row",
     justifyContent: "flex-end",

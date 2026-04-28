@@ -25,8 +25,8 @@ export default function FuncionarioCard({
     <View style={[styles.card, !isAtivo && { opacity: 0.7 }]}>
       <View style={styles.cardInfo}>
         <View style={styles.cardHeader}>
-          <Text style={styles.nomeCliente} numberOfLines={1}>
-            {item.pessoa.nome}
+          <Text style={styles.nomeFuncionario} numberOfLines={1}>
+            {item.pessoa.nome} - {item.cargo}
           </Text>
 
           <View style={[styles.badge, { backgroundColor: corBadgeFundo }]}>
@@ -36,14 +36,14 @@ export default function FuncionarioCard({
           </View>
         </View>
 
-        <Text style={styles.detalheCliente}>
+        <Text style={styles.detalheFuncionario}>
           <MaterialIcons name="email" size={14} /> {item.pessoa.email}
         </Text>
-        <Text style={styles.detalheCliente}>
-          <FontAwesome5 name="phone-alt" size={12} /> {item.matricula}
+        <Text style={styles.detalheFuncionario}>
+          <FontAwesome5 name="address-card" size={12} /> {item.matricula}
         </Text>
-        <Text style={styles.detalheCliente}>
-          <FontAwesome5 name="briefcase" size={12} /> {item.cargo} - {item.especializacao}
+        <Text style={styles.detalheFuncionario}>
+          <FontAwesome5 name="user-md" size={12} /> {item.especializacao}
         </Text>
 
       </View>
@@ -96,7 +96,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     marginBottom: 8,
   },
-  nomeCliente: {
+  nomeFuncionario: {
     fontSize: 18,
     fontWeight: "bold",
     color: "#2D3436",
@@ -105,7 +105,7 @@ const styles = StyleSheet.create({
   },
   badge: { paddingHorizontal: 8, paddingVertical: 4, borderRadius: 12 },
   badgeTexto: { fontSize: 12, fontWeight: "bold", textTransform: "uppercase" },
-  detalheCliente: { fontSize: 14, color: "#636E72", marginBottom: 2 },
+  detalheFuncionario: { fontSize: 17, color: "#626464", marginBottom: 2 },
   cardAcoes: {
     flexDirection: "row",
     justifyContent: "flex-end",

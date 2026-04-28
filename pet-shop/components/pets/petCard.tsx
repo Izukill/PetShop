@@ -110,12 +110,12 @@ const styles = StyleSheet.create({
   },
   especieTexto: {
     fontSize: 17,
-    color: "#636363",
+    color: "#626464",
     fontWeight: "normal",
   },
   badge: { paddingHorizontal: 8, paddingVertical: 4, borderRadius: 12 },
   badgeTexto: { fontSize: 12, fontWeight: "bold", textTransform: "uppercase" },
-  detalhePet: { fontSize: 15, color: "#626464", marginBottom: 2 },
+  detalhePet: { fontSize: 17, color: "#626464", marginBottom: 2 },
   cardAcoes: {
     flexDirection: "row",
     justifyContent: "flex-end",
