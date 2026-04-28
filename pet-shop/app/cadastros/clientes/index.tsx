@@ -24,7 +24,7 @@ export default function ListaClientes() {
   const [busca, setBusca] = useState("");
   const [loading, setLoading] = useState(true);
 
-  const { clienteId, clienteNome } = useLocalSearchParams<{
+  const { clienteId } = useLocalSearchParams<{
     clienteId: string;
     clienteNome: string;
   }>();

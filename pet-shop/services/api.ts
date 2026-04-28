@@ -1,8 +1,10 @@
 import { clienteData } from '../data/clientes';
 import { petData } from '../data/pets';
+import { funcionarioData } from '../data/funcionarios';
 
 
 export const api = {
+  
   get: async (rota: string, config?: any) => {
 
     if (rota === '/cliente') return { data: await clienteData.getAll() };
@@ -21,13 +23,22 @@ export const api = {
       return { data: pet };
     }
 
+    if (rota === '/funcionario') return { data : await funcionarioData.getAll() };
+    if (rota.startsWith('/funcionario/')) {
+      const id = rota.split('/')[2];
+      const funcionario = await funcionarioData.findByLookupId(id);
+      if (!funcionario) throw new Error("Funcionário não encontrado");
+      return { data: funcionario };
+    }
+
     return { data: [] };
   },
 
   post: async (rota: string, body: any, config?: any) => {
 
     if (rota === '/cliente') return { data: await clienteData.save(body) };
-    if (rota === '/pet') return { data: await petData.save(body) }; 
+    if (rota === '/pet') return { data: await petData.save(body) };
+    if (rota === '/funcionario') return { data: await funcionarioData.save(body) };
     throw new Error("Erro na rota de POST");
   },
 
@@ -54,6 +65,16 @@ export const api = {
       return { data: await petData.update(id, body) };
     }
 
+    if (rota.includes('/funcionario/') && rota.includes('/reativar')) {
+      const id = rota.split('/')[2];
+      await funcionarioData.reactivate(id);
+      return { data: { sucesso: true } };
+    }
+    if (rota.startsWith('/funcionario/')) {
+      const id = rota.split('/')[2];
+      return { data: await funcionarioData.update(id, body) };
+    }
+
     throw new Error("Erro na rota de PATCH");
   },
 
@@ -67,6 +88,11 @@ export const api = {
     if (rota.startsWith('/pet/')) {
       const id = rota.split('/')[2];
       await petData.remove(id);
+      return { data: { sucesso: true } };
+    }
+    if (rota.startsWith('/funcionario/')) {
+      const id = rota.split('/')[2];
+      await funcionarioData.remove(id);
       return { data: { sucesso: true } };
     }
     throw new Error("Erro na rota de DELETE");
@@ -83,6 +109,12 @@ export const api = {
     if (rota.startsWith('/pet/')) {
       const id = rota.split('/')[2];
       await petData.reactivate(id);
+      return { data: { sucesso: true } };
+    }
+
+    if (rota.startsWith('/funcionario/')) {
+      const id = rota.split('/')[2];
+      await funcionarioData.reactivate(id);
       return { data: { sucesso: true } };
     }
     throw new Error("Erro na rota de REACTIVATE");
