@@ -38,10 +38,7 @@ export default function EditarPet() {
   const [salvando, setSalvando] = useState(false);
 
   useEffect(() => {
-    carregarDadosBase();
-  }, [lookupId]);
-
-  const carregarDadosBase = async () => {
+    const carregarDadosBase = async () => {
     try {
 
       const clientesResponse = await api.get("/cliente", {
@@ -74,6 +71,11 @@ export default function EditarPet() {
       setLoading(false);
     }
   };
+
+    carregarDadosBase();
+  }, [lookupId]);
+
+  
 
   const atualizar = async () => {
     if (!nome || !especie || !raca || !idade || !peso) {

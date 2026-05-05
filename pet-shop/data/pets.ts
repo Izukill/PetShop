@@ -15,7 +15,18 @@ export interface Pet {
 }
 
 
-let pets: Pet[] = [];
+let pets: Pet[] = [
+  {
+    lookupId: 'pet-456-def',
+    nome: 'Thor',
+    especie: 'Cachorro',
+    raca: 'Pug',
+    peso: '8.5',
+    idade: 2,
+    clienteLookupId: '123-abc',
+    ativo: true,
+  }
+];
 
 export const petData = {
   
