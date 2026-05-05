@@ -27,28 +27,31 @@ export default function EditarFuncionario() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    const carregarDadosDoFuncionario = async () => {
+      try {
+        const response = await api.get(`/funcionario/${lookupId}`, {
+          headers: { },
+        });
+
+        const funcionario = response.data as unknown as Funcionario;
+
+        setNome(funcionario.pessoa.nome);
+        setEmail(funcionario.pessoa.email);
+        setCargo(funcionario.cargo);
+        setEspecializacao(funcionario.especializacao);
+      } catch {
+        Alert.alert(
+          "Erro",
+          "Não foi possível carregar os dados do funcionário.",
+        );
+        router.back();
+      } finally {
+        setLoading(false);
+      }
+    };
+
     carregarDadosDoFuncionario();
   }, [lookupId]);
-
-  const carregarDadosDoFuncionario = async () => {
-    try {
-      const response = await api.get(`/funcionario/${lookupId}`, {
-        headers: { },
-      });
-
-      const funcionario = response.data as Funcionario;
-
-      setNome(funcionario.pessoa.nome);
-      setEmail(funcionario.pessoa.email);
-      setCargo(funcionario.cargo);
-      setEspecializacao(funcionario.especializacao);
-    } catch {
-      Alert.alert("Erro", "Não foi possível carregar os dados do funcionário.");
-      router.back();
-    } finally {
-      setLoading(false);
-    }
-  };
 
   const atualizar = async () => {
     if (!nome || !email || !cargo || !especializacao) {
@@ -57,13 +60,11 @@ export default function EditarFuncionario() {
     }
 
     try {
-
       await api.patch(
         `/funcionario/${lookupId}`,
         { nome, email, cargo, especializacao },
         {
-          headers: {
-          },
+          headers: {},
         },
       );
 
@@ -153,7 +154,6 @@ export default function EditarFuncionario() {
             />
           </View>
 
-
           <Text style={styles.label}>Cargo</Text>
           <View style={styles.inputContainer}>
             <FontAwesome5
@@ -200,12 +200,12 @@ export default function EditarFuncionario() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#FFF"
+    backgroundColor: "#FFF",
   },
 
   scrollContent: {
     padding: 20,
-    paddingBottom: 40
+    paddingBottom: 40,
   },
 
   header: {
@@ -218,16 +218,16 @@ const styles = StyleSheet.create({
 
   botaoVoltar: {
     padding: 10,
-    backgroundColor: "#F5F7FA", 
-    borderRadius: 12 
+    backgroundColor: "#F5F7FA",
+    borderRadius: 12,
   },
-  titulo: { 
-    fontSize: 22, 
-    fontWeight: "bold", 
-    color: "#2D3436" 
+  titulo: {
+    fontSize: 22,
+    fontWeight: "bold",
+    color: "#2D3436",
   },
-  form: { 
-    gap: 15 
+  form: {
+    gap: 15,
   },
   label: {
     fontSize: 14,
