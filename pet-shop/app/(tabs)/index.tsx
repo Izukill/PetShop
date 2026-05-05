@@ -98,7 +98,7 @@ export default function Home() {
       {/* agenda */}
       <View style={styles.section}>
         <View style={styles.sectionHeader}>
-          <Text style={styles.sectionTitle}>Próximos Compromissos</Text>
+          <Text style={styles.sectionTitle}>Serviços Agendados</Text>
           <TouchableOpacity onPress={() => router.push('/agendamentos')}>
             <Text style={styles.verTodos}>Ver agenda</Text>
           </TouchableOpacity>
@@ -143,6 +143,8 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#F5F7FA',
   },
+  
+  // HEADER
   header: {
     flexDirection: 'row',
     justifyContent: 'space-between', 
@@ -164,33 +166,33 @@ const styles = StyleSheet.create({
     gap: 15,
   },
   avatarContainer: {
-    width: 55,
-    height: 55,
-    borderRadius: 27.5,
+    width: 50,
+    height: 50,
+    borderRadius: 25,
     backgroundColor: '#F0F4FF',
     justifyContent: 'center',
     alignItems: 'center',
   },
   saudacao: {
-    fontSize: 24, 
+    fontSize: 20,
     fontWeight: 'bold',
     color: '#2D3436',
   },
   subSaudacao: {
-    fontSize: 15, 
+    fontSize: 13,
     color: '#636E72',
     marginTop: 2,
   },
   botaoSair: {
     backgroundColor: '#FFEBEE', 
-    width: 45,
-    height: 45,
-    borderRadius: 22.5,
+    width: 40,
+    height: 40,
+    borderRadius: 20,
     justifyContent: 'center',
     alignItems: 'center',
   },
 
-  //cards de resumo
+  // CARDS DE RESUMO
   cardsContainer: {
     padding: 20,
     flexDirection: 'row', 
@@ -214,12 +216,12 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   cardTitulo: {
-    fontSize: 15, 
+    fontSize: 13,
     color: '#636E72',
     fontWeight: '600',
   },
   cardValor: {
-    fontSize: 26, 
+    fontSize: 22,
     fontWeight: 'bold',
     color: '#2D3436',
   },
@@ -236,18 +238,18 @@ const styles = StyleSheet.create({
     marginBottom: 15,
   },
   sectionTitle: {
-    fontSize: 22, 
+    fontSize: 18,
     fontWeight: 'bold',
     color: '#2D3436',
     marginBottom: 15,
   },
   verTodos: {
     color: '#4D7BF0',
-    fontSize: 16, 
+    fontSize: 14,
     fontWeight: '600',
   },
 
-  //atalhos rápidos
+  // ATALHOS RÁPIDOS
   acoesContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -257,15 +259,15 @@ const styles = StyleSheet.create({
     width: '22%',
   },
   acaoIcone: {
-    width: 65,
-    height: 65,
+    width: 55,
+    height: 55,
     borderRadius: 18,
     justifyContent: 'center',
     alignItems: 'center',
     marginBottom: 8,
   },
   acaoTexto: {
-    fontSize: 14, 
+    fontSize: 12,
     color: '#636E72',
     fontWeight: '600',
     textAlign: 'center',
@@ -287,13 +289,12 @@ const styles = StyleSheet.create({
   },
   agendamentoHora: {
     backgroundColor: '#F5F7FA',
-    paddingVertical: 10,
+    paddingVertical: 8,
     paddingHorizontal: 12,
     borderRadius: 10,
     marginRight: 15,
   },
   horaTexto: {
-    fontSize: 16, 
     fontWeight: 'bold',
     color: '#4D7BF0',
   },
@@ -301,24 +302,24 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   agendamentoPet: {
-    fontSize: 18,
+    fontSize: 16,
     fontWeight: 'bold',
     color: '#2D3436',
     marginBottom: 2,
   },
   agendamentoDono: {
-    fontSize: 16, 
+    fontSize: 14,
     fontWeight: 'normal',
     color: '#B2BEC3',
   },
   agendamentoServico: {
-    fontSize: 15, 
+    fontSize: 13,
     color: '#636E72',
   },
   botaoCheck: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
+    width: 35,
+    height: 35,
+    borderRadius: 17.5,
     borderWidth: 1,
     borderColor: '#DFE6E9',
     justifyContent: 'center',
@@ -337,16 +338,16 @@ const styles = StyleSheet.create({
     borderColor: '#F5F7FA',
   },
   avisoIcone: {
-    width: 45,
-    height: 45,
-    borderRadius: 12,
+    width: 40,
+    height: 40,
+    borderRadius: 10,
     justifyContent: 'center',
     alignItems: 'center',
     marginRight: 15,
   },
   avisoTexto: {
     flex: 1,
-    fontSize: 16, 
+    fontSize: 14,
     color: '#636E72',
     fontWeight: '500',
   }
