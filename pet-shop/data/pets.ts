@@ -1,9 +1,6 @@
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import 'react-native-get-random-values';
 import { v4 as uuidv4 } from 'uuid';
 import { clienteData } from './clientes';
-
-const PETS_KEY = '@PetShop:pets';
 
 export interface Pet {
   lookupId: string;
@@ -17,14 +14,12 @@ export interface Pet {
   cliente?: any;
 }
 
-export const petData = {
-  async getRaw(): Promise<Pet[]> {
-    const jsonValue = await AsyncStorage.getItem(PETS_KEY);
-    return jsonValue != null ? JSON.parse(jsonValue) : [];
-  },
 
+let pets: Pet[] = [];
+
+export const petData = {
+  
   async getAll(): Promise<Pet[]> {
-    const pets = await this.getRaw();
     const clientes = await clienteData.getAll();
     
     return pets.map(pet => ({
@@ -34,8 +29,6 @@ export const petData = {
   },
 
   async save(dados: { nome: string; raca: string; peso: string; idade: number; clienteLookupId: string; especie?: string }): Promise<Pet> {
-    const pets = await this.getRaw();
-    
     const novoPet: Pet = {
       lookupId: uuidv4(),
       nome: dados.nome,
@@ -48,17 +41,15 @@ export const petData = {
     };
 
     pets.push(novoPet);
-    await AsyncStorage.setItem(PETS_KEY, JSON.stringify(pets));
     return novoPet;
   },
 
   async findByLookupId(lookupId: string): Promise<Pet | undefined> {
-    const pets = await this.getAll();
-    return pets.find(p => p.lookupId === lookupId);
+    const petsComDono = await this.getAll();
+    return petsComDono.find(p => p.lookupId === lookupId);
   },
 
   async update(lookupId: string, dados: Partial<{ nome: string; raca: string; peso: string; idade: number; clienteLookupId: string; especie?: string }>): Promise<Pet> {
-    const pets = await this.getRaw();
     const index = pets.findIndex(p => p.lookupId === lookupId);
 
     if (index === -1) throw new Error("Pet não encontrado");
@@ -73,27 +64,20 @@ export const petData = {
       especie: dados.especie || pets[index].especie,
     };
 
-    await AsyncStorage.setItem(PETS_KEY, JSON.stringify(pets));
     return pets[index];
   },
 
   async remove(lookupId: string): Promise<void> {
-    const pets = await this.getRaw();
     const index = pets.findIndex(p => p.lookupId === lookupId);
-
     if (index !== -1) {
       pets[index].ativo = false;
-      await AsyncStorage.setItem(PETS_KEY, JSON.stringify(pets));
     }
   },
 
   async reactivate(lookupId: string): Promise<void> {
-    const pets = await this.getRaw();
     const index = pets.findIndex(p => p.lookupId === lookupId);
-
     if (index !== -1) {
       pets[index].ativo = true;
-      await AsyncStorage.setItem(PETS_KEY, JSON.stringify(pets));
     }
   }
 };

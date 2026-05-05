@@ -14,7 +14,6 @@ import {
 import { FontAwesome5, MaterialIcons, AntDesign } from "@expo/vector-icons";
 import { router, useLocalSearchParams } from "expo-router";
 import { api } from "@/services/api";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 
 import { Funcionario } from "@/data/funcionarios";
 
@@ -33,9 +32,8 @@ export default function EditarFuncionario() {
 
   const carregarDadosDoFuncionario = async () => {
     try {
-      const token = await AsyncStorage.getItem("@PetShop:token");
       const response = await api.get(`/funcionario/${lookupId}`, {
-        headers: { Authorization: `Bearer ${token}` },
+        headers: { },
       });
 
       const funcionario = response.data as Funcionario;
@@ -59,14 +57,12 @@ export default function EditarFuncionario() {
     }
 
     try {
-      const token = await AsyncStorage.getItem("@PetShop:token");
 
       await api.patch(
         `/funcionario/${lookupId}`,
         { nome, email, cargo, especializacao },
         {
           headers: {
-            Authorization: `Bearer ${token}`,
           },
         },
       );

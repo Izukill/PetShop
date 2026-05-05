@@ -3,7 +3,6 @@ import { View, Text, StyleSheet, TextInput, TouchableOpacity, FlatList, Activity
 import { FontAwesome5 } from "@expo/vector-icons";
 import { router, useFocusEffect, useLocalSearchParams } from "expo-router";
 import { api } from "@/services/api";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import ModalDeletar from "@/components/layout/modalDeletar";
 import ModalReativar from "@/components/layout/modalReativar";
 import PetCard from "@/components/pets/petCard";
@@ -32,9 +31,8 @@ export default function ListaPets() {
   const carregarPets = async () => {
     setLoading(true);
     try {
-      const token = await AsyncStorage.getItem("@PetShop:token");
       const response = await api.get("/pet", {
-        headers: { Authorization: `Bearer ${token}` },
+        headers: {  },
       });
       setPets(response.data as Pet[]);
     } catch {
@@ -48,9 +46,8 @@ export default function ListaPets() {
     if (!itemParaDeletar) return;
     try {
       setModalVisible(false);
-      const token = await AsyncStorage.getItem("@PetShop:token");
       await api.delete(`/pet/${itemParaDeletar.lookupId}`, {
-        headers: { Authorization: `Bearer ${token}` },
+        headers: { },
       });
       Alert.alert("Sucesso", "Pet removido!");
       carregarPets();
@@ -65,11 +62,10 @@ export default function ListaPets() {
     if (!itemParaReativar) return;
     try {
       setModalReativarVisible(false);
-      const token = await AsyncStorage.getItem("@PetShop:token");
       await api.patch(
         `/pet/${itemParaReativar.lookupId}/reativar`,
         {},
-        { headers: { Authorization: `Bearer ${token}` } }
+        { headers: { } }
       );
       Alert.alert("Sucesso", "Pet reativado!");
       carregarPets();

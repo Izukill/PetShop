@@ -14,7 +14,6 @@ import {
 import { FontAwesome5 } from "@expo/vector-icons";
 import { router, useLocalSearchParams } from "expo-router";
 import { api } from "@/services/api";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 
 import { Pet } from "@/data/pets";
 
@@ -44,10 +43,9 @@ export default function EditarPet() {
 
   const carregarDadosBase = async () => {
     try {
-      const token = await AsyncStorage.getItem("@PetShop:token");
 
       const clientesResponse = await api.get("/cliente", {
-        headers: { Authorization: `Bearer ${token}` },
+        headers: { },
       });
       const clientesAtivos = (clientesResponse.data as Cliente[]).filter(
         (c) => c.pessoa?.ativo !== false,
@@ -55,7 +53,7 @@ export default function EditarPet() {
       setClientesDisponiveis(clientesAtivos);
 
       const petResponse = await api.get(`/pet/${lookupId}`, {
-        headers: { Authorization: `Bearer ${token}` },
+        headers: { },
       });
       const pet = petResponse.data as Pet;
 
@@ -90,7 +88,6 @@ export default function EditarPet() {
 
     setSalvando(true);
     try {
-      const token = await AsyncStorage.getItem("@PetShop:token");
 
       await api.patch(
         `/pet/${lookupId}`,
@@ -103,7 +100,7 @@ export default function EditarPet() {
           clienteLookupId: clienteSelecionado.lookupId,
         },
         {
-          headers: { Authorization: `Bearer ${token}` },
+          headers: { },
         },
       );
 

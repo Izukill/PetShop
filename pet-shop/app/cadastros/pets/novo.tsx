@@ -14,7 +14,6 @@ import {
 import { FontAwesome5 } from "@expo/vector-icons";
 import { router } from "expo-router";
 import { api } from "@/services/api";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 
 import { Cliente } from "@/data/clientes";
 
@@ -40,9 +39,8 @@ export default function NovoPet() {
 
   const carregarClientes = async () => {
     try {
-      const token = await AsyncStorage.getItem("@PetShop:token");
       const response = await api.get("/cliente", {
-        headers: { Authorization: `Bearer ${token}` },
+        headers: { },
       });
       
 
@@ -83,7 +81,6 @@ export default function NovoPet() {
 
     setSalvando(true);
     try {
-      const token = await AsyncStorage.getItem("@PetShop:token");
 
       await api.post(
         "/pet",
@@ -95,7 +92,7 @@ export default function NovoPet() {
           idade,
           clienteLookupId: clienteSelecionado.lookupId,
         },
-        { headers: { Authorization: `Bearer ${token}` } },
+        { headers: { } },
       );
 
       Alert.alert("Sucesso Pet cadastrado com sucesso!");

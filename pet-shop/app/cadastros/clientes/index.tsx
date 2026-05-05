@@ -12,7 +12,6 @@ import {
 import { FontAwesome5 } from "@expo/vector-icons";
 import { router, useFocusEffect, useLocalSearchParams } from "expo-router";
 import { api } from "@/services/api";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import ModalDeletar from "@/components/layout/modalDeletar";
 import ModalReativar from "@/components/layout/modalReativar";
 import ClienteCard from "@/components/clientes/clienteCard";
@@ -46,9 +45,8 @@ export default function ListaClientes() {
   const carregarClientes = async () => {
     setLoading(true);
     try {
-      const token = await AsyncStorage.getItem("@PetShop:token");
       const response = await api.get("/cliente", {
-        headers: { Authorization: `Bearer ${token}` },
+        headers: {  },
       });
       setClientes(response.data as Cliente[]);
     } catch {
@@ -61,10 +59,9 @@ export default function ListaClientes() {
   const confirmarDelecao = async () => {
     if (!itemParaDeletar) return;
     try {
-      setModalVisible(false);
-      const token = await AsyncStorage.getItem("@PetShop:token");
+      setModalVisible(false);      
       await api.delete(`/cliente/${itemParaDeletar.lookupId}`, {
-        headers: { Authorization: `Bearer ${token}` },
+        headers: { },
       });
       Alert.alert("Sucesso", "Cliente removido!");
       carregarClientes();
@@ -79,12 +76,11 @@ export default function ListaClientes() {
     if (!itemParaReativar) return;
     try {
       setModalReativarVisible(false);
-      const token = await AsyncStorage.getItem("@PetShop:token");
       await api.patch(
         `/cliente/${itemParaReativar.lookupId}/reativar`,
         {},
         {
-          headers: { Authorization: `Bearer ${token}` },
+          headers: {  },
         },
       );
       Alert.alert("Sucesso", "Cliente reativado com sucesso!");

@@ -12,7 +12,6 @@ import {
 import { FontAwesome5 } from "@expo/vector-icons";
 import { router, useFocusEffect, useLocalSearchParams } from "expo-router";
 import { api } from "@/services/api";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import ModalDeletar from "@/components/layout/modalDeletar";
 import ModalReativar from "@/components/layout/modalReativar";
 import FuncionarioCard from "@/components/funcionarios/funcionarioCard";
@@ -46,9 +45,8 @@ export default function ListaFuncionarios() {
   const carregarFuncionarios = async () => {
     setLoading(true);
     try {
-      const token = await AsyncStorage.getItem("@PetShop:token");
       const response = await api.get("/funcionario", {
-        headers: { Authorization: `Bearer ${token}` },
+        headers: {  },
       });
       setFuncionarios(response.data as Funcionario[]);
     } catch {
@@ -62,9 +60,8 @@ export default function ListaFuncionarios() {
     if (!itemParaDeletar) return;
     try {
       setModalVisible(false);
-      const token = await AsyncStorage.getItem("@PetShop:token");
       await api.delete(`/funcionario/${itemParaDeletar.lookupId}`, {
-        headers: { Authorization: `Bearer ${token}` },
+        headers: { },
       });
       Alert.alert("Sucesso", "Funcionário removido!");
       carregarFuncionarios();
@@ -79,12 +76,11 @@ export default function ListaFuncionarios() {
     if (!itemParaReativar) return;
     try {
       setModalReativarVisible(false);
-      const token = await AsyncStorage.getItem("@PetShop:token");
       await api.patch(
         `/funcionario/${itemParaReativar.lookupId}/reativar`,
         {},
         {
-          headers: { Authorization: `Bearer ${token}` },
+          headers: { },
         },
       );
       Alert.alert("Sucesso", "Funcionário reativado com sucesso!");
