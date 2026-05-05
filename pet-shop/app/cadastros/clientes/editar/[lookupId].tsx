@@ -36,10 +36,7 @@ export default function EditarCliente() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    carregarDadosDoCliente();
-  }, [lookupId]);
-
-  const carregarDadosDoCliente = async () => {
+    const carregarDadosDoCliente = async () => {
     try {
       const response = await api.get(`/cliente/${lookupId}`, {
         headers: { //futuramente vou add um token de verificação (autenticação)
@@ -59,6 +56,10 @@ export default function EditarCliente() {
       setLoading(false);
     }
   };
+
+    carregarDadosDoCliente();
+  }, [lookupId]);
+
 
   const atualizar = async () => {
     if (!nome || !email || !numero) {

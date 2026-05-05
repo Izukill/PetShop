@@ -14,7 +14,20 @@ export interface Funcionario {
   };
 }
 
-let funcionarios: Funcionario[] = [];
+let funcionarios: Funcionario[] = [
+  {
+    id: 1,
+    lookupId: 'func-789-ghi',
+    matricula: 1001,
+    cargo: 'Veterinário',
+    especializacao: 'Cirurgia Geral',
+    pessoa: {
+      nome: 'Carlos Eduardo',
+      email: 'carlos@petshop.com.br',
+      ativo: true,
+    }
+  }
+];
 
 export const funcionarioData = {
   

@@ -1,10 +1,9 @@
 import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, ScrollView, Alert } from 'react-native';
 import { router } from 'expo-router';
-import { FontAwesome5 } from '@expo/vector-icons';
+import { FontAwesome5, Ionicons } from '@expo/vector-icons';
 
-//dados mockados pra demonstração - depois puxa da API
-
+// Dados mockados pra demonstração - depois puxa da API
 const agendamentosHoje = [
   { id: '1', hora: '10:00', pet: 'Rex', servico: 'Banho e Tosa', dono: 'Jaqueline' },
   { id: '2', hora: '11:30', pet: 'Mimi', servico: 'Consulta', dono: 'Carlos' },
@@ -42,32 +41,38 @@ export default function Home() {
         </TouchableOpacity>
       </View>
 
-      {/* resumo */}
+      {/* RESUMO - NOVO ESTILO WIDGET */}
       <View style={styles.cardsContainer}>
-        <View style={[styles.card, { borderLeftColor: '#00CEC9', borderLeftWidth: 4 }]}>
+        {/* Cartão de Faturamento (Azul) */}
+        <View style={[styles.card, { backgroundColor: '#4D7BF0' }]}>
           <View style={styles.cardHeader}>
-            <Text style={styles.cardTitulo}>Faturamento</Text>
-            <FontAwesome5 name="coins" size={16} color="#00CEC9" />
+            <Text style={[styles.cardTitulo, { color: 'rgba(255,255,255,0.8)' }]}>Faturamento</Text>
+            <View style={styles.iconContainerAzul}>
+              <FontAwesome5 name="coins" size={14} color="#4D7BF0" />
+            </View>
           </View>
-          <Text style={styles.cardValor}>R$ 450,00</Text>
+          <Text style={[styles.cardValor, { color: '#FFF' }]}>R$ 450,00</Text>
         </View>
 
-        <View style={[styles.card, { borderLeftColor: '#FF7675', borderLeftWidth: 4 }]}>
+        {/* Cartão de Agendamentos (Salmão) */}
+        <View style={[styles.card, { backgroundColor: '#FF7675' }]}>
           <View style={styles.cardHeader}>
-            <Text style={styles.cardTitulo}>Agendamentos</Text>
-            <FontAwesome5 name="calendar-check" size={16} color="#FF7675" />
+            <Text style={[styles.cardTitulo, { color: 'rgba(255,255,255,0.8)' }]}>Agendamentos</Text>
+            <View style={styles.iconContainerSalmao}>
+              <FontAwesome5 name="calendar-check" size={14} color="#FF7675" />
+            </View>
           </View>
-          <Text style={styles.cardValor}>5 Hoje</Text>
+          <Text style={[styles.cardValor, { color: '#FFF' }]}>5 Hoje</Text>
         </View>
       </View>
 
-      {/* atalhos rápidos */}
+      {/* ATALHOS RÁPIDOS */}
       <View style={styles.section}>
         <Text style={styles.sectionTitle}>Ações Rápidas</Text>
         <View style={styles.acoesContainer}>
           <TouchableOpacity style={styles.acaoBotao} onPress={() => router.push('/cadastros')}>
             <View style={[styles.acaoIcone, { backgroundColor: '#E1F5FE' }]}>
-              <FontAwesome5 name="folder-open" size={22} color="#03A9F4" />
+              <Ionicons name="people" size={27} color="#03A9F4" />
             </View>
             <Text style={styles.acaoTexto}>Cadastros</Text>
           </TouchableOpacity>
@@ -79,7 +84,7 @@ export default function Home() {
             <Text style={styles.acaoTexto}>Pets</Text>
           </TouchableOpacity>
 
-          <TouchableOpacity style={styles.acaoBotao } onPress={() => router.push('/agendamentos')}>
+          <TouchableOpacity style={styles.acaoBotao} onPress={() => router.push('/agendamentos')}>
             <View style={[styles.acaoIcone, { backgroundColor: '#E8F5E9' }]}>
               <FontAwesome5 name="calendar-plus" size={22} color="#4CAF50" />
             </View>
@@ -95,7 +100,7 @@ export default function Home() {
         </View>
       </View>
 
-      {/* agenda */}
+      {/* AGENDA */}
       <View style={styles.section}>
         <View style={styles.sectionHeader}>
           <Text style={styles.sectionTitle}>Serviços Agendados</Text>
@@ -120,7 +125,7 @@ export default function Home() {
         ))}
       </View>
 
-      {/* avisos*/}
+      {/* AVISOS */}
       <View style={[styles.section, { paddingBottom: 40 }]}>
         <Text style={styles.sectionTitle}>Avisos do Sistema</Text>
         
@@ -192,7 +197,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
 
-  // CARDS DE RESUMO
+  // CARDS DE RESUMO - ATUALIZADOS
   cardsContainer: {
     padding: 20,
     flexDirection: 'row', 
@@ -200,30 +205,43 @@ const styles = StyleSheet.create({
   },
   card: {
     width: '48%', 
-    backgroundColor: '#FFF',
     padding: 20,
-    borderRadius: 15,
+    borderRadius: 20, // Bordas mais suaves
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.05,
-    shadowRadius: 5,
-    elevation: 2,
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.1,
+    shadowRadius: 6,
+    elevation: 4,
   },
   cardHeader: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: 10,
+    marginBottom: 15, // Mais respiro antes do valor
   },
   cardTitulo: {
-    fontSize: 13,
-    color: '#636E72',
+    fontSize: 14,
     fontWeight: '600',
   },
   cardValor: {
-    fontSize: 22,
+    fontSize: 24,
     fontWeight: 'bold',
-    color: '#2D3436',
+  },
+  iconContainerAzul: {
+    backgroundColor: '#FFF',
+    width: 32,
+    height: 32,
+    borderRadius: 16,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  iconContainerSalmao: {
+    backgroundColor: '#FFF',
+    width: 32,
+    height: 32,
+    borderRadius: 16,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 
   // SEÇÕES GENÉRICAS
