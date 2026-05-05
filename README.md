@@ -6,7 +6,7 @@
  ![TypeScript](https://img.shields.io/badge/typescript-%23007ACC.svg?style=for-the-badge&logo=typescript&logoColor=white)
 
  <br>
- <img src="/home/izuki/Documentos/PetShop/pet-shop/assets/images/mewo.png" alt="Mewo pet" width="280">
+ <img src="/pet-shop/assets/images/mewo.png" alt="Mewo pet" width="280">
  
 </div>
 
