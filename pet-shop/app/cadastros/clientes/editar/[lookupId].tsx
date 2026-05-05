@@ -14,7 +14,6 @@ import {
 import { FontAwesome5, MaterialIcons, AntDesign } from "@expo/vector-icons";
 import { router, useLocalSearchParams } from "expo-router";
 import { api } from "@/services/api";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 
 interface Pessoa {
   nome: string;
@@ -42,9 +41,10 @@ export default function EditarCliente() {
 
   const carregarDadosDoCliente = async () => {
     try {
-      const token = await AsyncStorage.getItem("@PetShop:token");
       const response = await api.get(`/cliente/${lookupId}`, {
-        headers: { Authorization: `Bearer ${token}` },
+        headers: { //futuramente vou add um token de verificação (autenticação)
+          
+        },
       });
 
       const cliente = response.data as Cliente;
@@ -67,14 +67,13 @@ export default function EditarCliente() {
     }
 
     try {
-      const token = await AsyncStorage.getItem("@PetShop:token");
 
       await api.patch(
         `/cliente/${lookupId}`,
         { nome, email, numero },
         {
           headers: {
-            Authorization: `Bearer ${token}`,
+            
           },
         },
       );

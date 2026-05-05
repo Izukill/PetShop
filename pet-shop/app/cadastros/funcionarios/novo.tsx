@@ -3,7 +3,6 @@ import { View, Text, StyleSheet, TextInput, TouchableOpacity, ScrollView, Keyboa
 import { FontAwesome5, MaterialIcons, AntDesign } from '@expo/vector-icons';
 import { router } from 'expo-router';
 import { api } from '@/services/api';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function CadastroFuncionarios() {
   const [nome, setNome] = useState('');
@@ -19,13 +18,12 @@ export default function CadastroFuncionarios() {
     }
 
     try {
-      const token = await AsyncStorage.getItem('@PetShop:token');
 
       const response = await api.post("/funcionario", 
         { nome, email, cargo, especializacao },
         {
           headers: {
-            Authorization: `Bearer ${token}`
+          
           }
         }
       );
