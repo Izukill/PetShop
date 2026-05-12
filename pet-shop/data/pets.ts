@@ -1,3 +1,4 @@
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import 'react-native-get-random-values';
 import { v4 as uuidv4 } from 'uuid';
 import { clienteData } from './clientes';
@@ -7,30 +8,29 @@ export interface Pet {
   nome: string;
   especie?: string;
   raca: string;
-  peso: string;
+  peso: number;
   idade: number;
   clienteLookupId: string;
   ativo: boolean;
   cliente?: any;
 }
 
-
-let pets: Pet[] = [
-  {
-    lookupId: 'pet-456-def',
-    nome: 'Thor',
-    especie: 'Cachorro',
-    raca: 'Pug',
-    peso: '8.5',
-    idade: 2,
-    clienteLookupId: '123-abc',
-    ativo: true,
-  }
-];
+const STORAGE_KEY = '@pets';
 
 export const petData = {
   
+  async getRawAll(): Promise<Pet[]> {
+    try {
+      const jsonValue = await AsyncStorage.getItem(STORAGE_KEY);
+      return jsonValue != null ? JSON.parse(jsonValue) : [];
+    } catch (e) {
+      console.error("Erro ao buscar pets", e);
+      return [];
+    }
+  },
+
   async getAll(): Promise<Pet[]> {
+    const pets = await this.getRawAll();
     const clientes = await clienteData.getAll();
     
     return pets.map(pet => ({
@@ -39,7 +39,9 @@ export const petData = {
     }));
   },
 
-  async save(dados: { nome: string; raca: string; peso: string; idade: number; clienteLookupId: string; especie?: string }): Promise<Pet> {
+  async save(dados: { nome: string; raca: string; peso: number; idade: number; clienteLookupId: string; especie?: string }): Promise<Pet> {
+    const pets = await this.getRawAll();
+
     const novoPet: Pet = {
       lookupId: uuidv4(),
       nome: dados.nome,
@@ -52,6 +54,8 @@ export const petData = {
     };
 
     pets.push(novoPet);
+    await AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(pets));
+
     return novoPet;
   },
 
@@ -60,7 +64,8 @@ export const petData = {
     return petsComDono.find(p => p.lookupId === lookupId);
   },
 
-  async update(lookupId: string, dados: Partial<{ nome: string; raca: string; peso: string; idade: number; clienteLookupId: string; especie?: string }>): Promise<Pet> {
+  async update(lookupId: string, dados: Partial<{ nome: string; raca: string; peso: number; idade: number; clienteLookupId: string; especie?: string }>): Promise<Pet> {
+    const pets = await this.getRawAll();
     const index = pets.findIndex(p => p.lookupId === lookupId);
 
     if (index === -1) throw new Error("Pet não encontrado");
@@ -75,20 +80,27 @@ export const petData = {
       especie: dados.especie || pets[index].especie,
     };
 
+    await AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(pets));
     return pets[index];
   },
 
   async remove(lookupId: string): Promise<void> {
+    const pets = await this.getRawAll();
     const index = pets.findIndex(p => p.lookupId === lookupId);
+    
     if (index !== -1) {
       pets[index].ativo = false;
+      await AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(pets));
     }
   },
 
   async reactivate(lookupId: string): Promise<void> {
+    const pets = await this.getRawAll();
     const index = pets.findIndex(p => p.lookupId === lookupId);
+    
     if (index !== -1) {
       pets[index].ativo = true;
+      await AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(pets));
     }
   }
 };

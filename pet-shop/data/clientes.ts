@@ -1,6 +1,6 @@
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import 'react-native-get-random-values';
 import { v4 as uuidv4 } from 'uuid';
-
 
 export interface Cliente {
   id: number;
@@ -13,27 +13,27 @@ export interface Cliente {
   };
 }
 
-let clientes: Cliente[] = [
-  {
-    id: 1,
-    lookupId: '123-abc',
-    numero: '(83) 99999-1111',
-    pessoa: { nome: 'João Silva', email: 'joao@email.com', ativo: true }
-  }
-];
+const STORAGE_KEY = '@clientes';
 
 export const clienteData = {
   async getAll(): Promise<Cliente[]> {
-    return [...clientes]; 
+    try {
+      const jsonValue = await AsyncStorage.getItem(STORAGE_KEY);
+      return jsonValue != null ? JSON.parse(jsonValue) : [];
+    } catch (e) {
+      console.error("Erro ao buscar clientes", e);
+      return [];
+    }
   },
 
-
   async findByLookupId(lookupId: string): Promise<Cliente | undefined> {
+    const clientes = await this.getAll();
     return clientes.find(c => c.lookupId === lookupId);
   },
 
-
   async save(dados: { nome: string; email: string; numero: string }): Promise<Cliente> {
+    const clientes = await this.getAll();
+    
     const novoCliente: Cliente = {
       id: clientes.length > 0 ? Math.max(...clientes.map(c => c.id)) + 1 : 1,
       lookupId: uuidv4(),
@@ -46,11 +46,13 @@ export const clienteData = {
     };
 
     clientes.push(novoCliente);
+    await AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(clientes));
     
     return novoCliente;
   },
 
   async update(lookupId: string, dados: Partial<{ nome: string; email: string; numero: string }>): Promise<Cliente> {
+    const clientes = await this.getAll();
     const index = clientes.findIndex(c => c.lookupId === lookupId);
 
     if (index === -1) throw new Error("Cliente não encontrado");
@@ -65,20 +67,27 @@ export const clienteData = {
       }
     };
 
+    await AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(clientes));
     return clientes[index];
   },
 
   async remove(lookupId: string): Promise<void> {
+    const clientes = await this.getAll();
     const index = clientes.findIndex(c => c.lookupId === lookupId);
+    
     if (index !== -1) {
       clientes[index].pessoa.ativo = false;
+      await AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(clientes));
     }
   },
 
   async reactivate(lookupId: string): Promise<void> {
+    const clientes = await this.getAll();
     const index = clientes.findIndex(c => c.lookupId === lookupId);
+    
     if (index !== -1) {
       clientes[index].pessoa.ativo = true;
+      await AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(clientes));
     }
   }
 };
