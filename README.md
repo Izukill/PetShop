@@ -24,7 +24,7 @@
 
 O **PetControl** é um aplicativo mobile desenvolvido para a gestão completa de clínicas veterinárias e petshops. Desenvolvido para a matéria de Programação de dispositívos móveis.
 
-Atualmente, o aplicativo opera de forma sem backend real, utilizando uma arquitetura simulada em memória antes da integração com uma API definitiva.
+Atualmente, o aplicativo opera de forma sem backend real, utilizando uma arquitetura simulada com persistência local antes da integração com uma API definitiva.
 
 ## 🎯 Objetivos e Funcionalidades (V1)
 
@@ -45,6 +45,7 @@ Atualmente, o aplicativo opera de forma sem backend real, utilizando uma arquite
 | Expo Router | Roteamento baseado em arquivos (File-based routing) |
 | TypeScript | Tipagem estática para segurança do código |
 | UUID | Geração de identificadores únicos universais |
+| AsyncStorage | Armazenamento local de dados chave-valor assíncrono |
 
 ---
 
@@ -134,7 +135,7 @@ Após o comando, escaneie o QR Code gerado no terminal com o aplicativo Expo Go 
 
 ## 🏗️ Arquitetura e Salvamento de Dados (Mock API)
 
-Como este projeto ainda não possui um Backend e Banco de Dados reais (Node, Spring, Postgres, etc.), utilizei um padrão de arquitetura focado em In-Memory Storage, ou seja salva apenas na memória ram.
+Como este projeto ainda não possui um Backend e Banco de Dados reais (Node, Spring, Postgres, etc.), utilizei um padrão de arquitetura focado em persistência local com o AsyncStorege, ou seja salva apenas na máquina em que está rodando.
 
 
 O fluxo de salvamento funciona em 3 camadas:
@@ -153,9 +154,9 @@ Este arquivo atua como o "Axios" virtual do projeto. Ele intercepta a requisiç�
 
 Fiz isso apenas para ser mais simples quando for conectar com o back não ter que alterar tanto as requisições das telas apenas modificar o arquivo api.ts
 
-### 3. A Camada de Dados / In-Memory Storage (src/data/)
+### 3. A Camada de Dados / Local Storage (src/data/)
 
-Os arquivos dentro da pasta data recebem a requisição e atuam sobre Arrays Globais em Memória RAM (ex: let pets = []).
+Os arquivos dentro da pasta data atuam como o nosso "Banco de Dados", recebem a requisição do roteador, buscam os dados convertidos no armazenamento do celular via AsyncStorage.getItem, realizam a manipulação (adição, edição, exclusão) e convertem os dados de volta para texto (JSON), persistindo as alterações localmente usando AsyncStorage.setItem.
 
 ---
 
