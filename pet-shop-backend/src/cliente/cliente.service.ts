@@ -52,7 +52,6 @@ export class ClienteService {
     return cliente;
   }
 
-  // 2. ALTERADO: Recebe lookupId
   async update(lookupId: string, updateClienteDto: UpdateClienteDto) {
     try {
       return await this.prisma.cliente.update({
@@ -88,6 +87,29 @@ export class ClienteService {
           pessoa: {
             update: {
               ativo: false,
+            },
+          },
+        },
+        include: { pessoa: true },
+      });
+    } catch (error) {
+      if (error instanceof Prisma.PrismaClientKnownRequestError) {
+        if (error.code === 'P2025') {
+          throw new NotFoundException(`Cliente não encontrado.`);
+        }
+      }
+      throw error;
+    }
+  }
+
+  async reativar(lookupId: string) {
+    try {
+      return await this.prisma.cliente.update({
+        where: { lookupId: lookupId },
+        data: {
+          pessoa: {
+            update: {
+              ativo: true,
             },
           },
         },

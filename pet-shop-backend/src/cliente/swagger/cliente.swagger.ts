@@ -95,3 +95,23 @@ export function ApiDocRemoverCliente() {
     ApiResponse({ status: 404, description: 'Cliente não encontrado.' }),
   );
 }
+
+export function ApiDocReativarCliente() {
+  return applyDecorators(
+    ApiOperation({
+      summary: 'Reativa um cliente previamente removido',
+      description:
+        'Permite reativar um cliente que foi removido, caso ele não tenha vínculos que impeçam a reativação.',
+    }),
+    ApiParam({
+      name: 'lookupId',
+      description: 'Código identificador (lookupId) do cliente a ser reativado',
+      example: 10,
+    }),
+    ApiResponse({
+      status: 200,
+      description: 'Cliente reativado com sucesso.',
+    }),
+    ApiResponse({ status: 404, description: 'Cliente não encontrado.' }),
+  );
+}

@@ -19,6 +19,7 @@ import {
   ApiDocBuscarClientePorId,
   ApiDocAtualizarCliente,
   ApiDocRemoverCliente,
+  ApiDocReativarCliente,
 } from './swagger/cliente.swagger';
 
 @ApiTags('Clientes')
@@ -59,5 +60,11 @@ export class ClienteController {
   @ApiDocRemoverCliente()
   remove(@Param('lookupId') lookupId: string) {
     return this.clienteService.remove(lookupId);
+  }
+
+  @Patch(':lookupId/reativar')
+  @ApiDocReativarCliente()
+  reativar(@Param('lookupId') lookupId: string) {
+    return this.clienteService.reativar(lookupId);
   }
 }

@@ -12,11 +12,19 @@ import {
 import { FontAwesome5 } from "@expo/vector-icons";
 import { router, useFocusEffect, useLocalSearchParams } from "expo-router";
 import { api } from "@/services/api";
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import ModalDeletar from "@/components/layout/modalDeletar";
 import ModalReativar from "@/components/layout/modalReativar";
 import ClienteCard from "@/components/clientes/clienteCard";
 
-import { Cliente } from "@/data/clientes";
+interface Cliente {
+  lookupId: string;
+  pessoa: {
+    nome: string;
+    email: string;
+    ativo: boolean;
+  };
+}
 
 export default function ListaClientes() {
   const [clientes, setClientes] = useState<Cliente[]>([]);
@@ -45,11 +53,15 @@ export default function ListaClientes() {
   const carregarClientes = async () => {
     setLoading(true);
     try {
+      const token = await AsyncStorage.getItem('@PetShop:token');
       const response = await api.get("/cliente", {
-        headers: {  },
+        headers: { 
+          Authorization: `Bearer ${token}` 
+        },
       });
       setClientes(response.data as Cliente[]);
-    } catch {
+    } catch (error) {
+      console.error("Erro ao carregar:", error);
       Alert.alert("Erro", "Não foi possível carregar os clientes.");
     } finally {
       setLoading(false);
@@ -59,13 +71,18 @@ export default function ListaClientes() {
   const confirmarDelecao = async () => {
     if (!itemParaDeletar) return;
     try {
-      setModalVisible(false);      
+      setModalVisible(false); 
+      const token = await AsyncStorage.getItem('@PetShop:token');
+     
       await api.delete(`/cliente/${itemParaDeletar.lookupId}`, {
-        headers: { },
+        headers: { 
+          Authorization: `Bearer ${token}` 
+        },
       });
       Alert.alert("Sucesso", "Cliente removido!");
       carregarClientes();
-    } catch {
+    } catch (error) {
+      console.error("Erro ao deletar:", error);
       Alert.alert("Erro", "Não foi possível excluir o cliente.");
     } finally {
       setItemParaDeletar(null);
@@ -75,17 +92,21 @@ export default function ListaClientes() {
   const confirmarReativacao = async () => {
     if (!itemParaReativar) return;
     try {
+      const token = await AsyncStorage.getItem('@PetShop:token');
       setModalReativarVisible(false);
       await api.patch(
         `/cliente/${itemParaReativar.lookupId}/reativar`,
         {},
         {
-          headers: {  },
+          headers: { 
+            Authorization: `Bearer ${token}` 
+          },
         },
       );
       Alert.alert("Sucesso", "Cliente reativado com sucesso!");
       carregarClientes();
-    } catch {
+    } catch (error) {
+      console.error("Erro ao reativar:", error);
       Alert.alert("Erro", "Não foi possível reativar o cliente.");
     } finally {
       setItemParaReativar(null);

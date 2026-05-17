@@ -3,6 +3,7 @@ import { View, Text, StyleSheet, TextInput, TouchableOpacity, ScrollView, Keyboa
 import { FontAwesome5, MaterialIcons, AntDesign } from '@expo/vector-icons';
 import { router } from 'expo-router';
 import { api } from '@/services/api';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function CadastroClientes() {
   const [nome, setNome] = useState('');
@@ -16,13 +17,13 @@ export default function CadastroClientes() {
     }
 
     try {
-
+      const token = await AsyncStorage.getItem('@PetShop:token');
 
       const response = await api.post("/cliente", 
         { nome, email, numero },
         {
           headers: {
-            //futuramente vou add um token de verificação (autenticação)
+            Authorization: `Bearer ${token}`,
           }
         }
       );
