@@ -1,0 +1,2 @@
+-- CreateEnum
+CREATE TYPE "VendaStatus" AS ENUM ('CONCLUIDA', 'AGUARDANDO', 'CANCELADA');
