@@ -4,35 +4,36 @@ import { FontAwesome5, MaterialIcons, AntDesign } from '@expo/vector-icons';
 import { router } from 'expo-router';
 import { api } from '@/services/api';
 
-export default function CadastroClientes() {
+export default function CadastroFuncionarios() {
   const [nome, setNome] = useState('');
   const [email, setEmail] = useState('');
-  const [numero, setNumero] = useState('');
+  const [cargo, setCargo] = useState('');
+  const [especializacao, setEspecializacao] = useState('');
+  
 
   const salvar = async () => {
-    if (!nome || !email || !numero) {
+    if (!nome || !email || !cargo || !especializacao) {
       alert('Por favor, preencha todos os campos.');
       return;
     }
 
     try {
 
-
-      const response = await api.post("/cliente", 
-        { nome, email, numero },
+      const response = await api.post("/funcionario", 
+        { nome, email, cargo, especializacao },
         {
           headers: {
-            //futuramente vou add um token de verificação (autenticação)
+          
           }
         }
       );
       
-      alert('Cliente salvo com sucesso!');
-      router.back();
+      alert('Funcionário salvo com sucesso!');
+      router.push('/cadastros/funcionarios');
 
     } catch (error) {
       console.error(error);
-      alert('Erro ao salvar cliente! Verifique a conexão e tente novamente.');
+      alert('Erro ao salvar funcionário! Verifique a conexão e tente novamente.');
     }
   };
 
@@ -47,7 +48,7 @@ export default function CadastroClientes() {
           <TouchableOpacity onPress={() => router.back()} style={styles.botaoVoltar}>
             <FontAwesome5 name="arrow-left" size={20} color="#2D3436" />
           </TouchableOpacity>
-          <Text style={styles.titulo}><AntDesign name="user-add" size={25} color="black" /> Novo Cliente</Text>
+          <Text style={styles.titulo}><AntDesign name="user-add" size={25} color="black" /> Novo Funcionário</Text>
           <View style={{ width: 40 }} />
         </View>
 
@@ -81,22 +82,34 @@ export default function CadastroClientes() {
             />
           </View>
 
-          {/* numero */}
-          <Text style={styles.label}>Telefone / WhatsApp</Text>
+          {/* cargo */}
+          <Text style={styles.label}>Cargo</Text>
           <View style={styles.inputContainer}>
-            <FontAwesome5 name="phone-alt" size={18} color="#B2BEC3" style={styles.inputIcon} />
+            <FontAwesome5 name="briefcase" size={18} color="#B2BEC3" style={styles.inputIcon} />
             <TextInput 
               style={styles.inputText} 
-              placeholder="(83) 99999-9999"
+              placeholder="Ex: Veterinário"
               placeholderTextColor="#B2BEC3"
-              keyboardType="phone-pad"
-              value={numero}
-              onChangeText={setNumero}
+              value={cargo}
+              onChangeText={setCargo}
+            />
+          </View>
+
+          {/* especializacao */}
+          <Text style={styles.label}>Especialização</Text>
+          <View style={styles.inputContainer}>
+            <FontAwesome5 name="user-md" size={18} color="#B2BEC3" style={styles.inputIcon} />
+            <TextInput 
+              style={styles.inputText} 
+              placeholder="Ex: Cirurgião"
+              placeholderTextColor="#B2BEC3"
+              value={especializacao}
+              onChangeText={setEspecializacao}
             />
           </View>
 
           <TouchableOpacity style={styles.botaoSalvar} onPress={salvar}>
-            <Text style={styles.textoBotao}>Salvar Cliente</Text>
+            <Text style={styles.textoBotao}>Salvar Funcionário</Text>
           </TouchableOpacity>
           
         </View>
@@ -163,7 +176,7 @@ const styles = StyleSheet.create({
   botaoSalvar: { 
     flexDirection: 'row', 
     justifyContent: 'center',
-    backgroundColor: '#4D7BF0',
+    backgroundColor: '#4CAF50',
     padding: 18,
     borderRadius: 12,
     alignItems: 'center',

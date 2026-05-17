@@ -14,43 +14,43 @@ import { router, useFocusEffect, useLocalSearchParams } from "expo-router";
 import { api } from "@/services/api";
 import ModalDeletar from "@/components/layout/modalDeletar";
 import ModalReativar from "@/components/layout/modalReativar";
-import ClienteCard from "@/components/clientes/clienteCard";
+import FuncionarioCard from "@/components/funcionarios/funcionarioCard";
 
-import { Cliente } from "@/data/clientes";
+import { Funcionario } from "@/data/funcionarios";
 
-export default function ListaClientes() {
-  const [clientes, setClientes] = useState<Cliente[]>([]);
+export default function ListaFuncionarios() {
+  const [funcionarios, setFuncionarios] = useState<Funcionario[]>([]);
   const [busca, setBusca] = useState("");
   const [loading, setLoading] = useState(true);
 
-  const { clienteId } = useLocalSearchParams<{
-    clienteId: string;
-    clienteNome: string;
+  const { funcionarioId } = useLocalSearchParams<{
+    funcionarioId: string;
+    funcionarioNome: string;
   }>();
 
-  const [itemParaDeletar, setItemParaDeletar] = useState<Cliente | null>(null);
+  const [itemParaDeletar, setItemParaDeletar] = useState<Funcionario | null>(null);
   const [modalVisible, setModalVisible] = useState(false);
 
-  const [itemParaReativar, setItemParaReativar] = useState<Cliente | null>(
+  const [itemParaReativar, setItemParaReativar] = useState<Funcionario | null>(
     null,
   );
   const [modalReativarVisible, setModalReativarVisible] = useState(false);
 
   useFocusEffect(
     useCallback(() => {
-      carregarClientes();
+      carregarFuncionarios();
     }, []),
   );
 
-  const carregarClientes = async () => {
+  const carregarFuncionarios = async () => {
     setLoading(true);
     try {
-      const response = await api.get("/cliente", {
+      const response = await api.get("/funcionario", {
         headers: {  },
       });
-      setClientes(response.data as Cliente[]);
+      setFuncionarios(response.data as Funcionario[]);
     } catch {
-      Alert.alert("Erro", "Não foi possível carregar os clientes.");
+      Alert.alert("Erro", "Não foi possível carregar os funcionários.");
     } finally {
       setLoading(false);
     }
@@ -59,14 +59,14 @@ export default function ListaClientes() {
   const confirmarDelecao = async () => {
     if (!itemParaDeletar) return;
     try {
-      setModalVisible(false);      
-      await api.delete(`/cliente/${itemParaDeletar.lookupId}`, {
+      setModalVisible(false);
+      await api.delete(`/funcionario/${itemParaDeletar.lookupId}`, {
         headers: { },
       });
-      Alert.alert("Sucesso", "Cliente removido!");
-      carregarClientes();
+      Alert.alert("Sucesso", "Funcionário removido!");
+      carregarFuncionarios();
     } catch {
-      Alert.alert("Erro", "Não foi possível excluir o cliente.");
+      Alert.alert("Erro", "Não foi possível excluir o funcionário.");
     } finally {
       setItemParaDeletar(null);
     }
@@ -77,27 +77,27 @@ export default function ListaClientes() {
     try {
       setModalReativarVisible(false);
       await api.patch(
-        `/cliente/${itemParaReativar.lookupId}/reativar`,
+        `/funcionario/${itemParaReativar.lookupId}/reativar`,
         {},
         {
-          headers: {  },
+          headers: { },
         },
       );
-      Alert.alert("Sucesso", "Cliente reativado com sucesso!");
-      carregarClientes();
+      Alert.alert("Sucesso", "Funcionário reativado com sucesso!");
+      carregarFuncionarios();
     } catch {
-      Alert.alert("Erro", "Não foi possível reativar o cliente.");
+      Alert.alert("Erro", "Não foi possível reativar o funcionário.");
     } finally {
       setItemParaReativar(null);
     }
   };
 
-  const clientesProcessados = clientes
-    .filter((cliente) => {
-      if (clienteId && cliente.lookupId !== clienteId) return false;
+  const funcionariosProcessados = funcionarios
+    .filter((funcionario) => {
+      if (funcionarioId && funcionario.lookupId !== funcionarioId) return false;
 
-      const nomeSeguro = cliente.pessoa?.nome || "";
-      const emailSeguro = cliente.pessoa?.email || "";
+      const nomeSeguro = funcionario.pessoa?.nome || "";
+      const emailSeguro = funcionario.pessoa?.email || "";
       const buscaSegura = busca || "";
 
       return (
@@ -111,17 +111,11 @@ export default function ListaClientes() {
       return bStatus - aStatus;
     });
 
-  const renderItem = ({ item }: { item: Cliente }) => (
-    <ClienteCard
+  const renderItem = ({ item }: { item: Funcionario }) => (
+    <FuncionarioCard
       item={item}
-      onViewPets={() => {
-        router.push({
-          pathname: "/cadastros/pets",
-          params: { clienteId: item.lookupId, clienteNome: item.pessoa.nome },
-        });
-      }}
       onEdit={() =>
-        router.push(`/cadastros/clientes/editar/${item.lookupId}` as any)
+        router.push(`/cadastros/funcionarios/editar/${item.lookupId}` as any)
       }
       onDelete={() => {
         setItemParaDeletar(item);
@@ -144,8 +138,8 @@ export default function ListaClientes() {
           <FontAwesome5 name="arrow-left" size={20} color="#2D3436" />
         </TouchableOpacity>
         <Text style={styles.titulo}>
-          <FontAwesome5 name="user-friends" size={25} color="#03A9F4" />{" "}
-          Clientes
+          <FontAwesome5 name="id-badge" size={25} color="#4CAF50" />{" "}
+          Funcionários
         </Text>
         <View style={{ width: 40 }} />
       </View>
@@ -174,19 +168,19 @@ export default function ListaClientes() {
         />
       ) : (
         <FlatList
-          data={clientesProcessados}
+          data={funcionariosProcessados}
           keyExtractor={(item) => item.lookupId}
           renderItem={renderItem}
           contentContainerStyle={styles.listaConfig}
           ListEmptyComponent={
-            <Text style={styles.textoVazio}>Nenhum cliente encontrado.</Text>
+            <Text style={styles.textoVazio}>Nenhum funcionário encontrado.</Text>
           }
         />
       )}
 
       <TouchableOpacity
         style={styles.fab}
-        onPress={() => router.push("/cadastros/clientes/novo")}
+        onPress={() => router.push("/cadastros/funcionarios/novo")}
       >
         <FontAwesome5 name="plus" size={24} color="#FFF" />
       </TouchableOpacity>
@@ -248,9 +242,9 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     borderRadius: 8,
     borderWidth: 1,
-    borderColor: "#81D4FA",
+    borderColor: "#81faa5",
   },
-  filtroAtivoTexto: { color: "#0288D1", fontSize: 14 },
+  filtroAtivoTexto: { color: "#5fa361", fontSize: 14 },
 
   listaConfig: { paddingHorizontal: 20, paddingBottom: 100 },
   textoVazio: {
@@ -265,11 +259,11 @@ const styles = StyleSheet.create({
     right: 30,
     width: 60,
     height: 60,
-    backgroundColor: "#4D7BF0",
+    backgroundColor: "#4CAF50",
     borderRadius: 30,
     justifyContent: "center",
     alignItems: "center",
-    shadowColor: "#4D7BF0",
+    shadowColor: "#4CAF50",
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.4,
     shadowRadius: 5,

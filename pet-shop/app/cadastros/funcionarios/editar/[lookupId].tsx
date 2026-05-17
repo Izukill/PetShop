@@ -15,77 +15,66 @@ import { FontAwesome5, MaterialIcons, AntDesign } from "@expo/vector-icons";
 import { router, useLocalSearchParams } from "expo-router";
 import { api } from "@/services/api";
 
-interface Pessoa {
-  nome: string;
-  email: string;
-  ativo: boolean;
-}
+import { Funcionario } from "@/data/funcionarios";
 
-interface Cliente {
-  lookupId: string;
-  pessoa: Pessoa;
-  numero: string;
-}
-
-export default function EditarCliente() {
+export default function EditarFuncionario() {
   const { lookupId } = useLocalSearchParams<{ lookupId: string }>();
 
   const [nome, setNome] = useState("");
   const [email, setEmail] = useState("");
-  const [numero, setNumero] = useState("");
+  const [cargo, setCargo] = useState("");
+  const [especializacao, setEspecializacao] = useState("");
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const carregarDadosDoCliente = async () => {
-    try {
-      const response = await api.get(`/cliente/${lookupId}`, {
-        headers: { //futuramente vou add um token de verificação (autenticação)
-          
-        },
-      });
+    const carregarDadosDoFuncionario = async () => {
+      try {
+        const response = await api.get(`/funcionario/${lookupId}`, {
+          headers: { },
+        });
 
-      const cliente = response.data as Cliente;
+        const funcionario = response.data as unknown as Funcionario;
 
-      setNome(cliente.pessoa.nome);
-      setEmail(cliente.pessoa.email);
-      setNumero(cliente.numero);
-    } catch {
-      Alert.alert("Erro", "Não foi possível carregar os dados do cliente.");
-      router.back();
-    } finally {
-      setLoading(false);
-    }
-  };
+        setNome(funcionario.pessoa.nome);
+        setEmail(funcionario.pessoa.email);
+        setCargo(funcionario.cargo);
+        setEspecializacao(funcionario.especializacao);
+      } catch {
+        Alert.alert(
+          "Erro",
+          "Não foi possível carregar os dados do funcionário.",
+        );
+        router.back();
+      } finally {
+        setLoading(false);
+      }
+    };
 
-    carregarDadosDoCliente();
+    carregarDadosDoFuncionario();
   }, [lookupId]);
 
-
   const atualizar = async () => {
-    if (!nome || !email || !numero) {
+    if (!nome || !email || !cargo || !especializacao) {
       Alert.alert("Atenção", "Por favor, preencha todos os campos.");
       return;
     }
 
     try {
-
       await api.patch(
-        `/cliente/${lookupId}`,
-        { nome, email, numero },
+        `/funcionario/${lookupId}`,
+        { nome, email, cargo, especializacao },
         {
-          headers: {
-            
-          },
+          headers: {},
         },
       );
 
-      Alert.alert("Sucesso", "Cliente atualizado com sucesso!");
+      Alert.alert("Sucesso", "Funcionário atualizado com sucesso!");
       router.back();
     } catch (error) {
       console.error(error);
       Alert.alert(
         "Erro",
-        "Ocorreu um erro ao atualizar o cliente. Tente novamente.",
+        "Ocorreu um erro ao atualizar o funcionário. Tente novamente.",
       );
     }
   };
@@ -123,7 +112,7 @@ export default function EditarCliente() {
           <Text style={styles.titulo}>
             {" "}
             <AntDesign name="user-switch" size={25} color="black" /> Editar
-            Cliente
+            Funcionário
           </Text>
           <View style={{ width: 40 }} />
         </View>
@@ -165,26 +154,42 @@ export default function EditarCliente() {
             />
           </View>
 
-          <Text style={styles.label}>Telefone / WhatsApp</Text>
+          <Text style={styles.label}>Cargo</Text>
           <View style={styles.inputContainer}>
             <FontAwesome5
-              name="phone-alt"
+              name="briefcase"
               size={18}
               color="#B2BEC3"
               style={styles.inputIcon}
             />
             <TextInput
               style={styles.inputText}
-              placeholder="(83) 99999-9999"
+              placeholder="Ex: Veterinário"
               placeholderTextColor="#B2BEC3"
-              keyboardType="phone-pad"
-              value={numero}
-              onChangeText={setNumero}
+              value={cargo}
+              onChangeText={setCargo}
+            />
+          </View>
+
+          <Text style={styles.label}>Especialização</Text>
+          <View style={styles.inputContainer}>
+            <FontAwesome5
+              name="user-md"
+              size={18}
+              color="#B2BEC3"
+              style={styles.inputIcon}
+            />
+            <TextInput
+              style={styles.inputText}
+              placeholder="Ex: Cirurgião"
+              placeholderTextColor="#B2BEC3"
+              value={especializacao}
+              onChangeText={setEspecializacao}
             />
           </View>
 
           <TouchableOpacity style={styles.botaoSalvar} onPress={atualizar}>
-            <Text style={styles.textoBotao}>Atualizar Cliente</Text>
+            <Text style={styles.textoBotao}>Atualizar Funcionário</Text>
           </TouchableOpacity>
         </View>
       </ScrollView>
@@ -195,12 +200,12 @@ export default function EditarCliente() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#FFF"
+    backgroundColor: "#FFF",
   },
 
   scrollContent: {
     padding: 20,
-    paddingBottom: 40
+    paddingBottom: 40,
   },
 
   header: {
@@ -213,16 +218,16 @@ const styles = StyleSheet.create({
 
   botaoVoltar: {
     padding: 10,
-    backgroundColor: "#F5F7FA", 
-    borderRadius: 12 
+    backgroundColor: "#F5F7FA",
+    borderRadius: 12,
   },
-  titulo: { 
-    fontSize: 22, 
-    fontWeight: "bold", 
-    color: "#2D3436" 
+  titulo: {
+    fontSize: 22,
+    fontWeight: "bold",
+    color: "#2D3436",
   },
-  form: { 
-    gap: 15 
+  form: {
+    gap: 15,
   },
   label: {
     fontSize: 14,
@@ -246,7 +251,7 @@ const styles = StyleSheet.create({
   botaoSalvar: {
     flexDirection: "row",
     justifyContent: "center",
-    backgroundColor: "#4D7BF0",
+    backgroundColor: "#4CAF50",
     padding: 18,
     borderRadius: 12,
     alignItems: "center",
